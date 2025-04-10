@@ -1,15 +1,21 @@
-#USING PYTHON OS
-FROM python:3.13.1
+# Dockerfile
 
-#INITIALIZE THE WORKING DIRECTORY
+FROM python:3.10-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Set working directory
 WORKDIR /app
 
-#INSTALL ALL LIBRARIES/DEPENDENCIES NEEDED
-COPY requirements.txt requirements.txt
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-#COPY ALL FILES IN THE WORKING DIRECTORY
+# Copy the rest of the code
 COPY . .
 
-#CMD COMMANDS
-CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+# Default command
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

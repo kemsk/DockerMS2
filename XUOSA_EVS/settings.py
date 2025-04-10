@@ -75,8 +75,15 @@ WSGI_APPLICATION = 'XUOSA_EVS.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'XUOSA_DB',
+        'USER': 'xuosa_admin',
+        'PASSWORD': '4dm!n',
+        'HOST': 'db',
+        'PORT': '3306',
+        'OPTIONS':{
+            'sql_mode': 'STRICT_TRANS_TABLES'
+        }
     }
 }
 
