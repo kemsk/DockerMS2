@@ -5,7 +5,7 @@ This is the official repo for ITCC15 Group A
 # BASE CODE
 
 - Python 3.10
-- MySQL 8:0
+- MySQL 8.0
 - Django 5.2
 
 ![Image](https://github.com/user-attachments/assets/1bcf441c-bb5b-4e8c-a9d6-245053bae5a3)
