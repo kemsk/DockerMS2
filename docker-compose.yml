@@ -27,10 +27,10 @@ services:
     container_name: mysql_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: 012790
       MYSQL_DATABASE: projectdb
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 012790
     volumes:
       - db_data:/var/lib/mysql
     ports:
