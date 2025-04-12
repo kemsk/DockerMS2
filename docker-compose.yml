@@ -4,7 +4,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile  # uses the one we updated with python:3.12
+      dockerfile: Dockerfile  # Assumes Python 3.12 base
     container_name: django_app
     ports:
       - "8000:8000"
@@ -13,28 +13,33 @@ services:
     depends_on:
       - db
     environment:
-      - DB_NAME=projectdb
-      - DB_USER=user
-      - DB_PASSWORD=password
-      - DB_HOST=db
+      DB_NAME: projectdb
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_HOST: db
     command: >
-      sh -c "python manage.py migrate &&
-             python manage.py collectstatic --noinput &&
-             gunicorn app.wsgi:application --bind 0.0.0.0:8000"
+      sh -c "
+      python manage.py migrate &&
+      python manage.py collectstatic --noinput &&
+      gunicorn app.wsgi:application --bind 0.0.0.0:8000"
+    networks:
+      - backend
 
   db:
     image: mysql:8.0
     container_name: mysql_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 012790
+      MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: projectdb
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 012790
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
     volumes:
       - db_data:/var/lib/mysql
     ports:
       - "3306:3306"
+    networks:
+      - backend
 
   nginx:
     build:
@@ -45,6 +50,11 @@ services:
       - "80:80"
     depends_on:
       - web
+    networks:
+      - backend
 
 volumes:
   db_data:
+
+networks:
+  backend:
