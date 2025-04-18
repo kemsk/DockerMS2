@@ -1,16 +1,25 @@
-# DockerMS2
-## ⚙️ Prerequisites
+# groupA
+This is the official repo for ITCC15 Group A
 
-- Docker: https://docs.docker.com/get-docker/
-- Docker Compose: https://docs.docker.com/compose/install/
 
----
+# BASE CODE
 
-## 📦 Setup & Run
+- Python 3.10
+- MySQL 8.0
+- Django 5.2
 
-1. **Clone the repository**
-- git clone [https://github.com/your-username/your-repo.git](https://github.com/kemsk/DockerMS2.git)
-- cd your-repo
+![Image](https://github.com/user-attachments/assets/1bcf441c-bb5b-4e8c-a9d6-245053bae5a3)
 
-2. **Build and Run using Docker Compose**
-docker-compose up --build
+![Image](https://github.com/user-attachments/assets/82461ce6-9beb-457d-a78c-988bdf5cdc40)
+
+![Image](https://github.com/user-attachments/assets/6542132f-6e4c-40b6-a5bc-ac2797da780b)
+
+![Image](https://github.com/user-attachments/assets/4b18f871-2e3d-4071-88ed-4be7f7ce40af)
+
+![Image](https://github.com/user-attachments/assets/3580bc53-ee8d-47b3-b6ec-960e45e2c210)
+
+# VIDEO REFERENCES
+
+- https://www.youtube.com/watch?v=W5Ov0H7E_o4&list=PLOLrQ9Pn6cazCfL7v4CdaykNoWMQymM_C
+- https://www.youtube.com/watch?v=JLdEbb8Hcww
+- https://www.youtube.com/watch?v=arpayEBbotI&t=1449s
