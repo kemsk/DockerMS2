@@ -31,11 +31,7 @@ services:
       - "3307:3306"
     volumes:
       - ad_data:/var/lib/mysql
-<<<<<<< HEAD
       - ./init_ad.sql:/docker-entrypoint-initdb.d/init_ad.sql
-=======
-      - ./init_ad.sql:/docker-entrypoint-initdb.d/init.sql
->>>>>>> f1d7af53b2ec1c899a873523aef130c85bdfcbd5
 
   django-web:
     build: .

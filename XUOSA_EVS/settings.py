@@ -36,10 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-<<<<<<< HEAD
     'AD_EVS',
-=======
->>>>>>> f1d7af53b2ec1c899a873523aef130c85bdfcbd5
     'django.contrib.staticfiles'
 ]
 
@@ -58,11 +55,7 @@ ROOT_URLCONF = 'XUOSA_EVS.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-<<<<<<< HEAD
         'DIRS': [BASE_DIR / 'AD_EVS' / 'templates'],
-=======
-        'DIRS': [],
->>>>>>> f1d7af53b2ec1c899a873523aef130c85bdfcbd5
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -98,11 +91,7 @@ DATABASES = {
         'NAME': 'XUSSIO_AD',
         'USER': 'xussioad_admin',
         'PASSWORD': 'AD4dm!n',
-<<<<<<< HEAD
         'HOST': 'ad_db',
-=======
-        'HOST': 'db',
->>>>>>> f1d7af53b2ec1c899a873523aef130c85bdfcbd5
         'PORT': '3306',
         'OPTIONS':{
             'sql_mode': 'STRICT_TRANS_TABLES'
@@ -153,7 +142,4 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DATABASE_ROUTERS = ['AD_EVS.router.ActiveDirectoryRouter']
-<<<<<<< HEAD
 
-=======
->>>>>>> f1d7af53b2ec1c899a873523aef130c85bdfcbd5
