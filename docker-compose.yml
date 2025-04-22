@@ -1,60 +1,44 @@
-version: '3.8'
+version: '3'
 
 services:
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile  # Assumes Python 3.12 base
-    container_name: django_app
-    ports:
-      - "8000:8000"
-    volumes:
-      - .:/app
-    depends_on:
-      - db
-    environment:
-      DB_NAME: projectdb
-      DB_USER: user
-      DB_PASSWORD: password
-      DB_HOST: db
-    command: >
-      sh -c "
-      python manage.py migrate &&
-      python manage.py collectstatic --noinput &&
-      gunicorn app.wsgi:application --bind 0.0.0.0:8000"
-    networks:
-      - backend
-
   db:
     image: mysql:8.0
-    container_name: mysql_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: projectdb
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-    volumes:
-      - db_data:/var/lib/mysql
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     ports:
       - "3306:3306"
-    networks:
-      - backend
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  nginx:
-    build:
-      context: .
-      dockerfile: Dockerfile-nginx
-    container_name: nginx_proxy
+  web:
+    build: .
+    restart: always
+    command: >
+      sh -c "python manage.py wait_for_db &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
     ports:
-      - "80:80"
+      - "8000:8000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=${DEBUG}
     depends_on:
-      - web
-    networks:
-      - backend
+      - db
 
 volumes:
-  db_data:
-
-networks:
-  backend:
+  mysql_data:
