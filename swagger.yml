@@ -1,0 +1,562 @@
+openapi: 3.0.0
+info:
+  title: Student-Finder-API
+  description:
+    API for Student-Finder
+  version: 1.0.0
+servers:
+    - url: '/api'
+
+paths:        
+## (POST) USER LOGIN
+  /users/login:
+    post:
+      tags: 
+        - Users
+      summary: User login
+      description: Authenticates a user using their username and password.
+      operationId: app.login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username of the user.
+                password:
+                  type: string
+                  format: password
+                  description: The password of the user.
+              required:
+                - username
+                - password
+      responses:
+        201:
+          description: Login successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                    description: Confirmation message for a successful login.
+                    example: "Login successful."
+        400:
+          description: Bad request due to missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Explanation of the validation error.
+                    example: "Request must be in JSON format."
+                    
+        401:
+          description: Unauthorized due to invalid username or password.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Explanation of the authentication error.
+                    example: "Both 'username' and 'password' fields are required."
+
+## (POST) CREATE USER  
+  /users/create:
+    post:
+      tags: 
+      - Users
+      summary: Create a new user
+      description: Create a new user by providing the required details.
+      operationId: app.createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: Unique username for the user.
+                password:
+                  type: string
+                  description: Password for the user.
+                name:
+                  type: string
+                  description: Full name of the user.
+                email:
+                  type: string
+                  format: email
+                  description: Email address of the user.
+                role:
+                  type: string
+                  description: Role assigned to the user.
+              required:
+                - username
+                - password
+                - name
+                - email
+                - role
+      responses:
+        '201':
+          description: User created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message.
+                    example: "User created successfully."
+        '400':
+          description: Invalid request data or missing required fields.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message explaining the issue.
+                    example: "Request must be in JSON format."
+        '409':
+          description: Conflict due to username or email already existing, or invalid role.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Conflict error message.
+                    example: "Username already exists."
+
+## (DELETE) USER DELETE
+  /users/{userID}:
+    delete:
+      security:
+        - sessionAuth: []
+      tags:
+        - Users
+      summary: Delete a user account
+      description: Delete a user account by providing the userID and password.
+      operationId: app.deleteUser
+      parameters:
+        - name: userID
+          in: path
+          description: ID of the user to delete.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: User credentials required for deletion.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+      responses:
+        '200':
+          description: User deletion successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message.
+                    example: "User deletion successful."
+        '400':
+          description: Bad request due to missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating bad request.
+                    example: "Password is required for confirmation."
+        '403':
+          description: Forbidden to delete account.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating forbidden action.
+                    example: "Forbidden to delete account."
+        '404':
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description:  Error message indicating User not found.
+                    example: "User not found."
+
+## (GET) STUDENT (OKAY)
+  /studentinfo:
+    get:
+      security:
+        - sessionAuth: []
+      tags: 
+        - StudentInfo
+      summary: Get all student info
+      description: Retrieve student info based on query parameters.
+      operationId: app.getAll
+      parameters:
+        - name: studentid
+          in: query
+          description: Filter student by student id (case insensitive).
+          required: false
+          schema:
+            type: string
+        - name: fullname
+          in: query
+          description: Filter student by fullname (case insensitive).
+          required: false
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: Filter student by email (case insensitive).
+          required: false
+          schema:
+            type: string
+        - name: contactnumber
+          in: query
+          description: Filter student by contact number (case insensitive).
+          required: false
+          schema:
+            type: boolean
+
+      responses:
+        '200':
+          description: A list of student matching the filters.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    studentid:
+                      type: string
+                      description: ID of the student
+                    fullname:
+                      type: string
+                      description: Full name of the student                 
+                    course:
+                      type: string
+                      description: Course of the student
+                    yearlevel:
+                      type: integer
+                      description: Year level of the student
+                    email:
+                      type: string
+                      description: Email address of the student
+                    contactnumber:
+                      type: string
+                      description: Contact number of the student
+                    address:
+                      type: string
+                      description: Address of the student
+
+## (GET) SPECIFIC STUDENT (OKAY)
+  /studentinfo/{studentid}:
+    get:
+      security:
+        - sessionAuth: []
+      tags:
+        - StudentInfo
+      summary: Get specific student data
+      description: Retrieve detailed information for a student
+      operationId: app.getSpecificStudent
+      parameters:
+        - name: studentid
+          in: path
+          description: ID of the student
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A student 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  studentid:
+                    type: string
+                  fullname:
+                    type: string
+                  course:
+                    type: string
+                  yearlevel:
+                    type: integer
+                  email:  
+                    type: string
+                  contactnumber:
+                    type: string
+                  address:
+                    type: integer
+                     
+        '404':
+          description: Student not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the student was not found.
+                    example: "Student not found."
+
+## (PUT) USER UPDATE A STUDENT RECORD (OKAY)
+    put:
+      security:
+        - sessionAuth: []
+      tags:
+        - Users
+      summary: Update a specific student record
+      description: Perform a full update on a specific student by the user.
+      operationId: app.updateSpecificStudentByUser
+      parameters:
+        - name: studentid
+          in: path
+          description: ID of the student updating the recipe.
+          required: true
+          schema:
+            type: integer
+        - name: fullname
+          in: path
+          description: fullname of the student to update.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: student data to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                studentid:
+                  type: string
+                fullname:
+                  type: string
+                course:
+                  type: string
+                yearlevel:
+                  type: integer
+                email:
+                  type: string
+                contactnumber:
+                  type: string
+                address:
+                  type: string
+      responses:
+        '200':
+          description: student information updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message.
+                    example: "Student information updated successfully."
+        '403':
+          description: Forbidden to update student information.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating forbidden action.
+                    example: "Forbidden to update student information."
+        '404':
+          description: No student found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating no student was found.
+                    example: "No student found."
+
+## (PATCH) USER PARTIAL UPDATE A STUDENT RECORD (OKAY)
+    patch:
+      security:
+        - sessionAuth: []
+      tags:
+        - Users
+      summary: Partially update a specific recipe
+      description: Perform a partial update on a specific recipe by the user.
+      operationId: app.partialUpdateSpecificStudentByUser
+      parameters:
+        - name: studentid
+          in: path
+          description: ID of the student updating the recipe.
+          required: true
+          schema:
+            type: integer
+        - name: fullname
+          in: path
+          description: fullname of the student to update.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Student data to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                studentid:
+                  type: string
+                fullname:
+                  type: string
+                course:
+                  type: string
+                yearlevel:
+                  type: integer
+                email:
+                  type: string
+                contactnumber:
+                  type: string
+                address:
+                  type: string
+      responses:
+        '200':
+          description: Student information updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message.
+                    example: "Student information updated successfully."
+        '403':
+          description: Forbidden to update Student information.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating forbidden action.
+                    example: "Forbidden to update Student information."
+        '404':
+          description: No Student found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating no Student was found.
+                    example: "No Student found."
+
+
+components:
+## API KEY
+  securitySchemes:
+    sessionAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      x-bearerInfoFunc: app.decode_token
+
+## SCHEMAS
+  schemas:
+    StudentInfo:
+      type: object
+      properties:
+        studentid:
+          type: string
+          description: ID of the student
+          example: "20220024573"
+        fullname:
+          type: string
+          description: Full name of the student
+          example: "Kimberly Uy Flores"
+        course:
+          type: string
+          description: Course of the student
+          example: "BSIT"
+        yearlevel:
+          type: integer
+          description: Year level of the student
+          example: 3
+        email:
+          type: string
+          description: Email address of the student
+          example: "20220024573@my.xu.edu.ph"
+        contactnumber:
+          type: string
+          description: Contact number of the student
+          example: "09123456789"
+        address:
+          type: string
+          description: Address of the student
+          example: "123 Main Street, City, Country"
+
+          
+    Users:
+      type: object
+      properties:
+        username:
+          type: string
+          description: The unique identifier for the security personel
+          example: Guard1
+        password:
+          type: string
+          description: password of the security personel
+          example: userpassword123
+        name:
+          type: string
+          description: Full name of the security personel
+          example: John Doe
+        email:
+          type: string
+          description: Email address of the security personel
+          example: johndoe@example.com
+        role:
+          type: string
+          description: The role of the security personel
+          example: [admin, user]
