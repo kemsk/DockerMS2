@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XU OSA - Admin Dashboard</title>
+  <link rel="stylesheet" href="admin.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+  <!-- Header Section -->
+  <div class="header">
+    <div class="header-title">
+      <div class="title-small">XU OSA</div>
+      <div class="title-large">ENTRY VIOLATION SYSTEM</div>
+    </div>
+    <div class="user-info">
+      <div class="user-icons">
+        <span class="icon-settings" aria-label="Settings Icon"></span>
+        <div class="vertical-line"></div>
+        <span class="icon-user" aria-label="User Icon"></span>
+      </div>
+      <div class="user-details">
+        <div>PEPITO, REM WELL</div>
+        <div>SSIO User</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Navigation -->
+  <div class="buttons">
+    <button class="btn view" id="view-violations">
+      <i class="fas fa-eye icon" aria-hidden="true"></i><b>VIEW VIOLATIONS</b>
+    </button>
+    <button class="btn add" id="add-violation">
+      <i class="fas fa-plus-circle icon" aria-hidden="true"></i><b>ADD VIOLATION</b>
+    </button>
+    <button class="btn manage" id="manage-users">
+      <i class="fas fa-users-cog icon" aria-hidden="true"></i><b>MANAGE USERS</b>
+    </button>
+    <div class="date-info">
+      <div class="today">TODAY</div>
+      <div id="current-date"></div>
+      <div id="current-time"></div>
+    </div>
+  </div>
+
+  <div class="horizontal-line"></div>
+
+  <!-- View Violations Content ---------------------------------------------------------------------------------------------->
+  <div id="view-violations-content" class="content-section" style="display:none;">
+    <div class="section-header">
+      <div class="title-section">
+        <i class="fas fa-table" aria-hidden="true"></i> RECENT VIOLATIONS
+      </div>
+      <div class="controls">
+        <div class="filter-container">
+          <select id="filter-by-status" class="status sort-btn">
+            <option value="" disabled selected>ID Status</option>
+            <option value="claimed">Claimed</option>
+            <option value="unclaimed">Unclaimed</option>
+          </select>
+        </div>
+        <div class="sort-container">
+          <select id="sort-by" class="status sort-btn">
+            <option value="" disabled selected>Sort By</option>
+            <option value="date">Date</option>
+            <option value="student-name">Student Name</option>
+          </select>
+        </div>
+        <div class="search-container">
+          <input type="text" id="search-student" class="status sort-btn" placeholder="Search Student" />
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <table class="violations-table">
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Student ID</th>
+            <th>Ticket #</th>
+            <th>Violation Type</th>
+            <th>Date/Time</th>
+            <th>OSA Status</th>
+            <th>ID Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="violations-table-body">
+          <!-- Violations data will be injected here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Add Violation Content ------------------------------------------------------------------------------------------------->
+  <div id="add-violation-content" class="content-section" style="display:none;">
+    <div class="section-header">
+      <div class="title-section">
+        <i class="fas fa-plus-circle icon" aria-hidden="true"></i> VIOLATION DETAILS
+      </div>
+    </div>
+    
+    <div class="container-fluid">
+      <div class="row mx-md-n5">
+        <div class="col-sm-6 px-md-4">
+          <h3><b>Ticket #123</b></h3>
+        </div>
+      </div>
+      <div class="row mt-1">
+        <div class="col-sm-3">
+          <div class="violations-details p-3">
+            <label><b>Reported on:</b></label>
+            <div>
+              <span>March 24, 2025</span>, <span>4:40 PM</span>
+            </div>
+            <label><b>Reported by:</b></label>
+            <p>Pepito, Rem Well</p>
+            <p><b>Violation Type:</b></p>
+            <div class="checkboxes">
+              <label><input type="checkbox" name="violation" value="ID Violation" /> ID Violation</label><br />
+              <label><input type="checkbox" name="violation" value="Dress Code Violation" /> Dress Code Violation</label><br />
+              <label><input type="checkbox" name="violation" value="Uniform Violation" /> Uniform Violation</label><br />
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-3">
+          <div class="violations-details p-3">
+            <form id="add-violation-form">
+              <label for="photo-proof"><b>Photo Proof:</b></label>
+              <input type="file" id="photo-proof" name="photo-proof" class="form-control mb-3" />
+              <label for="description"><b>Description:</b></label>
+              <input type="text" id="description" class="form-control" />
+            </form>
+          </div>
+        </div>
+
+        <div class="col-sm-3">
+          <h4><b>Student Details</b></h4>
+          <div class="student-photo p-3">
+            <img src="placeholder.jpg" alt="ID Photo" class="img-fluid" />
+          </div>
+        </div>
+
+        <div class="col-sm-3">
+          <div class="student-details p-3">
+            <label for="student-name"><b>Name:</b></label>
+            <input type="text" id="student-name" class="form-control" placeholder="Student Full Name" />
+            <label for="student-id"><b>Student ID:</b></label>
+            <input type="text" id="student-id" class="form-control" placeholder="Student No." />
+            <div class="button-group d-flex justify-content-end mt-3">
+              <button type="button" class="btn btn-danger cancel-btn me-2">CANCEL</button>
+              <button type="submit" class="btn btn-primary confirm-btn">CONFIRM</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manage Users Content ---------------------------------------------------------------------------------------->
+  <div id="manage-users-content" class="content-section" style="display:none;">
+    <div class="section-header">
+      <div class="title-section">
+        <i class="fas fa-users-cog icon" aria-hidden="true"></i> MANAGE USERS
+      </div>
+    </div>
+
+    <div class="invi-container">
+      <!-- LEFT PANEL -->
+      <div class="options-container p-3 left-panel">
+        <div class="container-fluid">
+          <button class="btn view-active-users active w-100 mb-3" id="view-active-users-btn">
+            <i class="fas fa-eye"></i><b> View Active Users</b>
+          </button>
+          <button class="btn create-new-user w-100" id="create-new-user-btn">
+            <i class="fa-solid fa-plus"></i><b> Create New User</b>
+          </button>
+        </div>
+      </div>
+    
+      <!-- RIGHT PANEL -->
+      <div class="options-container p-3 right-panel">
+        <div class="container-fluid">
+          <!-- Active Users Table -->
+          <div id="active-users-section" class="content-section" style="display:block;">
+            <div class="controls d-flex justify-content-between align-items-center mb-3">
+              <select class="sort-by">
+                <option value="date">Sort By: Employee Name</option>
+                <option value="student-name">Sort By: Employee Username</option>
+              </select>
+    
+              <div class="search-container">
+                <i class="fas fa-search" aria-hidden="true"></i>
+                <input type="text" id="search-employee" placeholder="Search Employee" class="search-input" />
+              </div>
+            </div>
+    
+            <table id="users-table" class="w-100">
+              <thead>
+                <tr>
+                  <th>Employee Name</th>
+                  <th>Employee ID</th>
+                  <th>Email</th>
+                  <th>Username</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>John Doe</td>
+                  <td>123456</td>
+                  <td>john@example.com</td>
+                  <td>johndoe</td>
+                  <td>
+                    <button class="btn btn-sm btn-warning">Edit</button>
+                    <button class="btn btn-sm btn-danger">Delete</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+    
+          <!-- Create User Form -->
+          <div id="create-user-section" class="content-section" style="display:none;">
+            <form id="manage-users-form">
+              <label for="employee-name">Employee Name:</label>
+              <input type="text" id="employee-name" required class="form-control mb-3" />
+              <label for="employee-id">Employee ID:</label>
+              <input type="text" id="employee-id" required class="form-control mb-3" />
+              <label for="email">Email Address:</label>
+              <input type="email" id="email" required class="form-control mb-3" />
+              <label for="username">Username:</label>
+              <input type="text" id="username" required class="form-control mb-3" />
+              <label for="password">Password:</label>
+              <input type="password" id="password" required class="form-control mb-3" />
+              <label for="confirm-password">Confirm Password:</label>
+              <input type="password" id="confirm-password" required class="form-control mb-3" />
+              <button type="submit" class="btn btn-primary w-100">Add User</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+
+
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
