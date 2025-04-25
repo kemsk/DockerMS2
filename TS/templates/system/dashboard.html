@@ -1,0 +1,51 @@
+{% extends "ts_index.html" %}
+{% block content%}
+<div id="view-violations-content" class="content-section" style="display:none;">
+    <div class="section-header">
+      <div class="title-section">
+        <i class="fas fa-table" aria-hidden="true"></i> RECENT VIOLATIONS
+      </div>
+      <div class="controls">
+        <div class="filter-container">
+          <select id="filter-by-status" class="status sort-btn">
+            <option value="" disabled selected>ID Status</option>
+            <option value="claimed">Claimed</option>
+            <option value="unclaimed">Unclaimed</option>
+          </select>
+        </div>
+        <div class="sort-container">
+          <select id="sort-by" class="status sort-btn">
+            <option value="" disabled selected>Sort By</option>
+            <option value="date">Date</option>
+            <option value="student-name">Student Name</option>
+          </select>
+        </div>
+        <div class="search-container">
+          <input type="text" id="search-student" class="status sort-btn" placeholder="Search Student" />
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <table class="violations-table">
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Student ID</th>
+            <th>Ticket #</th>
+            <th>Violation Type</th>
+            <th>Date/Time</th>
+            <th>OSA Status</th>
+            <th>ID Status</th>
+            <th>Actions</th>
+          </tr>
+          <tr>
+                <td></td>
+          </tr>
+        </thead>
+        <tbody id="violations-table-body">
+          <!-- Violations data will be injected here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

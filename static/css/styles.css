@@ -1,0 +1,550 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Overpass', sans-serif;
+    margin: 0;
+    padding: 10px; /* Added 'px' to fix syntax issue */
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    display: flex;
+    background-color: white;
+    font-weight: 600;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-title {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.title-small {
+    font-size: 14px;
+    color: #19387E; /* Xavier University Light Blue */
+    font-weight: bold;
+}
+  
+.title-large {
+    font-size: 20px;
+    color: #19387E; /* Xavier University Dark Blue */
+    font-weight: bold;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-details {
+    text-align: left;
+    font-size: 14px;
+    color: #19387E;
+}
+  
+.user-details div:first-child {
+    font-weight: bold;
+}
+  
+.user-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.vertical-line {
+    width: 1px; /* Width of the line */
+    height: 30px; /* Height of the line, matches icon size */
+    background-color: #ccc; /* Color of the line */
+}
+
+.horizontal-line {
+    margin-bottom: 20px;
+    height: 1px;
+    background-color: #ccc; /* Color of the line */
+}
+  
+.icon-settings,
+.icon-user {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-size: cover;
+}
+  
+.icon-settings {
+    background-image: url("./static/assets/settings.svg"); /* Replace with actual icon path */
+}
+  
+.icon-user {
+    background-image: url("./static/assets/profile.svg"); /* Replace with actual icon path */
+}
+
+/* Navigation Buttons */
+.buttons {
+    margin-top: 30px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding: 10px 30px 30px;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    max-width: 240px;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+/* Unified button color for View, Add, and Manage */
+.btn.view, .btn.add, .btn.manage {
+    background-color: #D2DAE3; /* Light Blue background */
+    color: #162B5E; /* Xavier University Dark Blue text */
+    weight: bold;
+}
+
+/* Hover Effects */
+.btn:hover {
+    transform: translateY(-5px);  /* Adds lift effect */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Adds shadow */
+}
+
+/* Active State for clicked button */
+.buttons .btn.active {
+    background-color: #19387E; /* Xavier University Light Blue for active state */
+    color: white;
+}
+
+.btn.view:hover, .btn.add:hover, .btn.manage:hover {
+    background-color: #c0d5f3;  /* Slightly darker blue when hovered */
+}
+
+.icon {
+    display: inline-flex; /* Ensure icons are treated as block elements */
+    align-items: center; /* Vertically center the icon */
+    justify-content: center; /* Horizontally center the icon */
+    width: 20px; /* Width of the icon */
+    height: 20px; /* Height of the icon */
+    color: inherit; /* Inherit the button's text color */
+    margin: 10px; /* Margin around the icon */
+}
+  
+/* For Font Awesome Icons */
+.fas {
+    font-size: 18px;
+    color: inherit;
+    width: fit-content
+}
+
+/* Date and Time Section positioned beside the buttons */
+.date-info-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%; /* Ensure it takes up full width of its container */
+    align-items: center;
+    padding: 10px 30px 30px;
+}
+
+.today {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.date-info {
+    text-align: right;
+    font-size: 25px;
+    color: #1a3c73; /* Accent Blue */
+    font-weight: bold;
+    margin-left: auto; /* Pushes date/time to the right */
+    padding-left: 20px; /* Adds some spacing from the buttons */
+    flex-grow: 1;
+}
+
+.current-date {
+    font-size: 24px;
+    font-weight: bold;
+}
+  
+/* Time Section */
+.current-time {
+    font-size: 18px;
+}
+
+.content-section {
+    display: none;
+    transition: all 0.5s ease;
+}
+
+.content-section.show {
+    display: block;
+}
+
+
+.section-header {
+    padding: 20px;
+    max-width: 1100px;
+    display: flex;
+}
+
+.title-section {
+    padding-left: 30px;
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #19387E; /* Xavier University Dark Blue */
+    font-weight: bold;
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin-top: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+th, .reported-on, .reported-by {
+  
+    font-weight: bold;
+    color: #19387E; /* White text for the header */
+}
+
+td {
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+tbody tr:hover {
+    background-color: #e9f3ff; /* Light blue background on hover */
+    cursor: pointer; /* Change cursor to indicate interactivity */
+}
+
+/* Status Dot Colors */
+.status-dot {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.Pending { background-color: red; }
+.Resolved { background-color: orange; }
+.Claimed { background-color: green; }
+.Cleared { background-color: blue; }
+
+/* Actions Column */
+.actions {
+    display: flex;
+    gap: 10px;
+}
+  
+.actions i {
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Filter Button */
+.filter-btn {
+    padding: 10px 20px;
+    margin-right: 10px;
+    background-color: #FFFFFF; /* Light Blue background */
+    color: #1a2f6b; /* Xavier University Dark Blue text */
+    border: 1px solid #DCDCDD;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+
+/* Sort By Dropdown */
+.sort-by {
+    padding: 8px 15px;
+    background-color: #FFFFFF; /* Light Blue background */
+    color: #1a2f6b; /* Xavier University Dark Blue text */
+    border: 1px solid #DCDCDD;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+  
+/* Container */
+.search-container {
+    display: flex;
+    align-items: center;
+    background-color: #FFFFFF;
+    border-radius: 20px;
+    padding: 5px;
+}
+  
+.search-input {
+    border: none;
+    outline: none;
+    font-size: 14px;
+    padding: 5px;
+    width: 150px; /* Adjust as needed */
+    border-radius: 20px; /* Rounded edges */
+    
+}
+
+/* Controls Container */
+.controls {
+    display: flex;
+    justify-content: flex-end; /* Align controls to the right */
+    gap: 10px; /* Spacing between controls */
+    align-items: right; /* Vertically center the controls */
+    margin-top: 5px; /* Space below the table */
+}
+
+/* View More Button */
+.view-more {
+    display: block;
+    margin: 20px auto; /* Center the button */
+    padding: 10px 20px;
+    background-color: #dbe1ee;
+    color: #1a2f6b;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.view-more:hover {
+    background-color: #c0d5f3;
+}
+
+.go-back-btn {
+    display: flex;
+    padding: 10px 20px;
+    background-color: #dbe1ee; /* Light Blue background */
+    color: #1a2f6b; /* Xavier University Dark Blue text */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-color: 1px blue;
+}
+
+.go-back-btn:hover {
+    background-color: #c0d5f3; /* Slightly darker blue on hover */
+}
+
+ /*TWO COLUMN*/
+
+/* Reduce padding and margins globally */
+.h3 {
+    margin: 0; /* Remove default margins */
+    padding: 5px 0; /* Add minimal vertical padding */
+    font-size: 18px; /* Slightly reduce font size */
+  }
+  
+  /* Add left padding specifically to the "Ticket #" title */
+  .ticket-title {
+    padding-left: 15px; /* Add padding to the left of "Ticket #" */
+  }
+
+ .container-fluid {
+    padding: 20px;
+    max-width: 1100px;
+    margin: auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .row {
+    color: #19387E;
+    weight: bold;
+    margin-bottom: 20px;
+    margin-left: 20px;
+  }
+  
+
+  form {
+    flex: 1; /* Ensures the form takes up equal space in a flex container */
+  }
+
+.col-sm-4,
+.col-sm-2,
+.col-sm-3 {
+  padding: 10px;
+}
+  
+  .violations-details,
+  .student-details {
+    flex: 1; /* Ensures both columns take up equal width */
+    display: flex;
+    flex-direction: column; /* Aligns content vertically within each column */
+    gap: 10px; /* Adds spacing between elements */
+  }
+
+  .violations-details p-3,
+  .student-details {
+    flex: 1; /* Ensures both columns take up equal width */
+    display: flex;
+    flex-direction: column; /* Aligns content vertically within each column */
+    gap: 10px; /* Adds spacing between elements */
+  }
+
+  
+  .vertical-line2 {
+    width: 1px; /* Width of the line */
+    background-color: #ccc; /* Color of the line */
+    align-self: stretch; /* Ensures the line spans the full height of the container */
+  }
+
+  .checkboxes {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  
+  .upload-btn {
+    padding: 8px 15px;
+    background-color: #dbe1ee; /* Light Blue background */
+    color: #1a2f6b; /* Xavier University Dark Blue text */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .upload-btn:hover {
+    background-color: #c0d5f3; /* Slightly darker blue on hover */
+  }
+  
+  .cancel-btn,
+  .confirm-btn {
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    transform: translateY(60px);
+  }
+  
+  .cancel-btn {
+    background-color: #fff;
+    color: red;
+  }
+  
+  .confirm-btn {
+    background-color: #007bff; /* Blue color for confirm button */
+    color: #fff;
+  }
+  
+  .confirm-btn:hover {
+    background-color: #0056b3; /* Slightly darker blue on hover */
+  }
+  
+  .student-photo img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border: 1px solid #C4C4C4;
+    border-radius: 5px;
+  }
+
+
+@media (max-width: 768px) {
+
+    .header, .filters, .buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .user-info, .date-info {
+        text-align: right;
+    }
+
+    .btn.view, .btn.add, .btn.manage {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    th, td {
+        font-size: 12px;
+    }
+
+    .controls {
+        flex-direction: column; /* Stack controls vertically */
+        align-items: flex-start; /* Align controls to the left */
+        gap: 10px; /* Add spacing between stacked controls */
+    }
+
+    .search-container {
+        width: 100%; /* Make search input full width */
+    }
+
+    .row {
+        flex-direction: column;
+      }
+}
+
+
+
+/* Form Input and Button Styles */
+.add-violation-form input, .manage-users-form input, #add-violation-form button {
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.add-violation-form button, .manage-users-form button {
+    padding: 12px;
+    font-size: 16px;
+    background-color: #003c52; /* Xavier University Blue */
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.add-violation-form button:hover, .manage-users-form button:hover {
+    background-color: #005e7f; /* Xavier University Light Blue */
+}
+
+.add-violation-form input[type="text"]:focus, 
+.add-violation-form input[type="password"]:focus, 
+#manage-users-form input[type="text"]:focus, 
+#manage-users-form input[type="password"]:focus {
+    border-color: #005e7f;
+    box-shadow: 0 0 5px rgba(0, 94, 127, 0.3);
+}
