@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XU OSA - Admin Dashboard</title>
+
+    <!-- CSS Links -->
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Header Section -->
+    <header class="header d-flex justify-content-between align-items-center p-3">
+        <a href="dashboard.html" class="header-title text-decoration-none">
+            <div class="title-small"><strong>XU OSA</strong></div>
+            <div class="title-large"><strong>ENTRY VIOLATION SYSTEM</strong></div>
+        </a>
+
+        <button type="button" class="user-info d-flex align-items-center border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#logoutModal" style="cursor: pointer;">
+            <div class="user-icons d-flex align-items-center">
+                <span class="icon-settings me-2" aria-label="Settings Icon"></span>
+                <div class="vertical-line mx-2"></div>
+                <span class="icon-user" aria-label="User Icon"></span>
+            </div>
+            <div class="user-details ms-3 text-start">
+                <div><strong>PEPITO, REM WELL</strong></div>
+                <div>SSIO User</div>
+            </div>
+        </button>
+    </header>
+
+    <!-- Admin Navigation -->
+    <nav class="nav buttons d-flex flex-wrap align-items-center p-3">
+        <a href="dashboard.html" class="btn manage me-2 mb-2">
+            <i class="fas fa-eye icon me-1" aria-hidden="true"></i><b>VIEW VIOLATIONS</b>
+        </a>
+        <a href="addViolation.html" class="btn manage active me-2 mb-2">
+            <i class="fas fa-plus-circle icon me-1" aria-hidden="true"></i><b>ADD VIOLATION</b>
+        </a>
+        <a href="manageUsers.html" class="btn manage me-2 mb-2">
+            <i class="fas fa-users-cog icon me-1" aria-hidden="true"></i><b>MANAGE USERS</b>
+        </a>
+
+        <div class="date-info ms-auto text-end">
+            <div class="today">TODAY</div>
+            <div id="current-date"></div>
+            <div id="current-time"></div>
+        </div>
+    </nav>
+
+    <div class="horizontal-line mb-4"></div>
+
+    <!-- Add Violation Content -->
+    <section id="add-violation-content">
+        <div class="section-header mb-4">
+            <div class="title-section">
+                <i class="fas fa-plus-circle icon"></i><b>VIOLATION DETAILS</b>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+          <div class="row mb-3">
+            <div class="col-12 d-flex align-items-center" style="padding-left: 30px;">
+                <h2 class="me-3 mb-0"><b>Ticket #2425-01</b></h2>
+            </div>
+        </div>
+
+        <div class="row g-3">
+
+            <!-- Violation Info -->
+            <div class="col-md-2">
+                <div class="violations-details p-3" style="padding-left: 35px;">
+                    <label><b>Reported on:</b></label>
+                    <div>
+                        <span>March 24, 2025</span>, <span>4:40 PM</span>
+                    </div>
+                    <label class="mt-2"><b>Reported by:</b></label>
+                    <p>Pepito, Rem Well</p>
+                </div>
+            </div>
+
+            <!-- Photo Proof + Description -->
+            <div class="col-md-3">
+                <div class="violations-details p-3">
+                    <form id="add-violation-form">
+                        <div class="checkboxes mb-3">
+                            <p><b>Violation Type:</b></p>
+                            <div><input type="checkbox" name="violation" value="ID Violation"> ID Violation</div>
+                            <div><input type="checkbox" name="violation" value="Dress Code Violation"> Dress Code Violation</div>
+                            <div><input type="checkbox" name="violation" value="Uniform Violation"> Uniform Violation</div>
+                        </div>
+                        <label for="photo-proof" class="mt-2"><b>Photo Proof:</b></label>
+                        <input type="file" id="photo-proof" name="photo-proof" class="form-control mb-3">
+                        <label for="description"><b>Description:</b></label>
+                        <input type="text" id="description" class="form-control">
+                    </form>
+                </div>
+            </div>
+
+            <!-- Vertical Line Divider -->
+            <div class="col-md-1 d-flex justify-content-center align-items-center">
+                <div style="border-left: 1px solid #ccc; height: 100%;"></div>
+            </div>
+
+            <!-- Student Photo -->
+            <div class="col-md-2">
+                <div class="student-photo text-center">
+                    <h4><b>Student Details</b></h4>
+                    <img src="placeholder.jpg" alt="ID Photo" class="img-fluid rounded">
+                </div>
+            </div>
+
+            <!-- Student Details -->
+            <div class="col-md-4">
+                <div class="student-details mt-2 p-3">
+                    <label for="student-name"><b>Name:</b></label>
+                    <input type="text" id="student-name" class="form-control mb-2" placeholder="Student Full Name">
+                    <label for="student-id"><b>Student ID:</b></label>
+                    <input type="text" id="student-id" class="form-control mb-3" placeholder="Student No.">
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-outline-danger cancel-btn mt-5 me-2">CANCEL</button>
+                        <button type="submit" class="btn btn-primary confirm-btn mt-5">CONFIRM</button>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- End Row -->
+    </section>
+
+    <!-- Logout Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body text-center">
+                    <p>Are you sure you want to logout, <strong>Rem Well Pepito</strong>?</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" style="width:fit-content" data-bs-dismiss="modal">Cancel</button>
+                    <a href="loginPage.html" class="btn btn-danger" style="width:fit-content" >Logout</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- JS File -->
+    <script src="admin.js"></script>
+</body>
+
+</html>
