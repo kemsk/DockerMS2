@@ -89,11 +89,11 @@ body {
 }
   
 .icon-settings {
-    background-image: url("./static/assets/settings.svg"); /* Replace with actual icon path */
+    background-image: url("{% static 'assets/settings.svg' %}"); /* Replace with actual icon path */
 }
   
 .icon-user {
-    background-image: url("./static/assets/profile.svg"); /* Replace with actual icon path */
+    background-image: url("{% static 'assets/profile.svg' %}"); /* Replace with actual icon path */
 }
 
 /* Navigation Buttons */
@@ -126,7 +126,7 @@ body {
 .btn.view, .btn.add, .btn.manage {
     background-color: #D2DAE3; /* Light Blue background */
     color: #162B5E; /* Xavier University Dark Blue text */
-    weight: bold;
+    font-weight: bold;
 }
 
 /* Hover Effects */
@@ -388,7 +388,7 @@ tbody tr:hover {
   
   .row {
     color: #19387E;
-    weight: bold;
+    font-weight: bold;
     margin-bottom: 20px;
     margin-left: 20px;
   }

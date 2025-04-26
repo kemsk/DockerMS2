@@ -1,5 +1,14 @@
 from django.shortcuts import render
+from datetime import datetime
+from .models import * 
 
-# Create your views here.
 def dashboard_view(request):
-    return render(request, 'system/dashboard.html')
+    now = datetime.now()
+
+    violations = Violation.objects.all()  # Fetch all violations
+
+    context = {
+        'violations': violations,
+    }
+
+    return render(request, 'system/dashboard.html', context)
