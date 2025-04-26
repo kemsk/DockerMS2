@@ -16,6 +16,9 @@ Including another URLconf
 """
 from django.urls import path, include
 
+
+
 urlpatterns = [
     path('admin/xu-entry-violation/', include('TS.urls'))
 ]
+
