@@ -23,6 +23,7 @@ services:
   web:
     build: .
     container_name: "evs_web_dev"
+    entrypoint: ["sh", "/app/entrypoint.sh"]
     env_file:
       - .env
     restart: on-failure:3
@@ -31,7 +32,8 @@ services:
       - ./requirements.txt:/app/requirements.txt
       - ./static:/app/static
     ports:
-      - "8000:8000"
+      - "8001:8001"
+
     depends_on:
       db:
         condition: service_healthy
@@ -44,3 +46,5 @@ services:
 
 volumes:
   mysql_data:
+
+  

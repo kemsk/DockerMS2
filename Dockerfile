@@ -10,7 +10,9 @@ WORKDIR /app
 # Set environment variables to optimize Python
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1 
- 
+
+RUN apt-get update && apt-get install -y netcat-openbsd
+
 # Upgrade pip and install dependencies
 RUN pip install --upgrade pip 
  
