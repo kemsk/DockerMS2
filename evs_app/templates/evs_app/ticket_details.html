@@ -1,0 +1,149 @@
+{% extends "evs_app/base.html" %}
+
+{% block title %}XU OSA - Ticket Details{% endblock %}
+
+{% block content %}
+<!-- Ticket Details Content -->
+<div id="ticket-details-content">
+    <div class="section-header d-flex justify-content-between align-items-center mb-4">
+        <div class="title-section">
+            <i class="fas fa-ticket-alt me-2"></i><b>TICKET DETAILS</b>
+        </div>
+
+        <a class="btn btn-outline-primary" href="{% url 'dashboard' %}" role="button" style="padding: 4px 12px; width: 110px;">
+            <i class="fas fa-arrow-left"></i> Go Back
+        </a>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row g-4">
+            <!-- Ticket Header -->
+            <div class="col-12 d-flex align-items-center" style="padding-left: 30px">
+                <h2 class="me-3 mb-0"><b>Ticket #{{ violation.ticket_number }}</b></h2>
+                {% if violation.status == 'pending' %}
+                <span class="badge bg-danger">Pending</span>
+                {% elif violation.status == 'claimed' %}
+                <span class="badge bg-warning text-dark">ID Claimed</span>
+                {% else %}
+                <span class="badge bg-success">Resolved</span>
+                {% endif %}
+            </div>
+
+            <!-- Photo Proof -->
+            <div class="col-md-3">
+                <div class="violations-details p-3" style="padding-left: 35px;">
+                    <label><b>Photo Proof:</b></label>
+                    {% if violation.photo_proof %}
+                    <img src="{{ violation.photo_proof.url }}" alt="Photo Proof" class="img-fluid rounded mb-3">
+                    {% else %}
+                    <div class="placeholder-img rounded" style="background-color: #f0f0f0; height: 200px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-camera fa-3x text-muted"></i>
+                        <span class="ms-2 text-muted">No photo provided</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Ticket Details -->
+            <div class="col-md-3">
+                <div class="ticket-details p-3">
+                    <p><strong>Reported on:</strong> {{ violation.date_recorded|date:"F d, Y" }}</p>
+                    <p><strong>Reported by:</strong> {% if violation.recorded_by %}{{ violation.recorded_by.user.get_full_name }}{% else %}System{% endif %}</p>
+                    <p><strong>Violation Type:</strong> {{ violation.violation.name }}</p>
+                    {% if violation.reason %}
+                    <p><strong>Reason:</strong> {{ violation.reason.name }}</p>
+                    {% endif %}
+                    {% if violation.description %}
+                    <p><strong>Description:</strong> {{ violation.description }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Vertical Line Divider -->
+            <div class="col-md-1 d-flex justify-content-center align-items-center">
+                <div style="border-left: 2px solid #ccc; height: 100%;"></div>
+            </div>
+
+            <!-- Student Details -->
+            <div class="col-md-4 text-center">
+                <div class="student-details p-3">
+                    <h4><b>Student Details</b></h4>
+                    <div class="placeholder-img rounded mb-3" style="background-color: #f0f0f0; height: 200px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-user-circle fa-5x text-muted"></i>
+                    </div>
+                    <p><strong>Name:</strong> {{ violation.student.name }}</p>
+                    <p><strong>Student ID:</strong> {{ violation.student.student_id }}</p>
+                    
+                    <form method="post" action="{% url 'update_violation_status' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="violation_id" value="{{ violation.record_id }}">
+                        
+                        {% if violation.status == 'pending' %}
+                        <button type="button" class="btn btn-warning claim-btn mt-2" data-id="{{ violation.record_id }}">MARK ID CLAIMED</button>
+                        {% elif violation.status == 'claimed' %}
+                        <button type="button" class="btn btn-success resolve-btn mt-2" data-id="{{ violation.record_id }}">MARK RESOLVED</button>
+                        {% else %}
+                        <div class="alert alert-success mt-3">
+                            This violation has been resolved on {{ violation.resolved_at|date:"F d, Y" }} by {{ violation.resolved_by.user.get_full_name }}.
+                        </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div> <!-- End Row -->
+    </div> <!-- End Container -->
+</div> <!-- End Ticket Details Content -->
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // CSRF token for AJAX requests
+        const csrfToken = '{{ csrf_token }}';
+        
+        // Claim button functionality
+        const claimBtn = document.querySelector('.claim-btn');
+        if (claimBtn) {
+            claimBtn.addEventListener('click', function() {
+                const violationId = this.getAttribute('data-id');
+                updateViolationStatus(violationId, 'claimed');
+            });
+        }
+        
+        // Resolve button functionality
+        const resolveBtn = document.querySelector('.resolve-btn');
+        if (resolveBtn) {
+            resolveBtn.addEventListener('click', function() {
+                const violationId = this.getAttribute('data-id');
+                updateViolationStatus(violationId, 'resolved');
+            });
+        }
+        
+        function updateViolationStatus(violationId, status) {
+            fetch('{% url "update_violation_status" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({
+                    violation_id: violationId,
+                    status: status
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the violation status.');
+            });
+        }
+    });
+</script>
+{% endblock %}

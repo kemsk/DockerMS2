@@ -40,6 +40,7 @@ services:
       DATABASE_NAME: ${DB_NAME}
       DATABASE_USER: ${DB_USER}
       DATABASE_PASSWORD: ${DB_PASSWORD}
-    
+      DJANGO_SETTINGS_MODULE: XUOSA_EVS.settings 
+
 volumes:
   mysql_data:

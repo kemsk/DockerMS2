@@ -1,0 +1,68 @@
+{% extends "evs_app/base.html" %}
+
+{% block title %}XU OSA - Login{% endblock %}
+
+{% block content %}
+<div class="center-container">
+  <div class="container-fluid d-flex justify-content-center">
+    <div class="row justify-content-center">
+
+      <!-- Left Panel: Instructions -->
+      <div class="col-md-5 d-flex flex-column justify-content-center mb-4 mb-md-0">
+        <div class="instructions p-4">
+          <h2><b>Welcome Back!</b></h2>
+          <span class="badge bg-primary text-white mb-3">Instructions</span>
+          <p><strong>Is this your first time here?</strong></p>
+          <p>Your username is your University ID number/email address, and your default password is a combination of your Lastname in capital letters and the last four digits of your University ID number.</p>
+          <p><em>Example using University email:</em><br>
+            <em>username: 2013001934@my.xu.edu.ph<br>
+            password: LEE1934</em></p>
+          <p class="mt-3"><small>*This system is for SSO use only.</small></p>
+        </div>
+      </div>
+
+      <!-- Vertical Divider -->
+      <div class="col-md-1 d-none d-md-flex align-items-center justify-content-center">
+        <div style="border-left: 2px solid #ccc; height: 60%;"></div>
+      </div>
+
+      <!-- Right Panel: Login Form -->
+      <div class="col-md-4 d-flex flex-column justify-content-center">
+        <div class="login-form p-4">
+          <h4 class="mb-4 text-center"><b>Login</b></h4>
+          <form action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="id_username" class="form-label"><strong>Username</strong></label>
+              {{ form.username }}
+              {% if form.username.errors %}
+                <div class="text-danger">
+                  {% for error in form.username.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+            <div class="mb-3">
+              <label for="id_password" class="form-label"><strong>Password</strong></label>
+              {{ form.password }}
+              {% if form.password.errors %}
+                <div class="text-danger">
+                  {% for error in form.password.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+            <div class="mb-3 text-end">
+              <a href="#" class="forgot-password">Forgot Password?</a>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">LOG IN</button>
+          </form>
+        </div>
+      </div>
+
+    </div> <!-- End Row -->
+  </div> <!-- End Container -->
+</div>
+{% endblock %}

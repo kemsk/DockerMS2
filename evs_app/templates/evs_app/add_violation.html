@@ -1,0 +1,112 @@
+{% extends "evs_app/base.html" %}
+
+{% block title %}XU OSA - Add Violation{% endblock %}
+
+{% block content %}
+<!-- Add Violation Content -->
+<section id="add-violation-content">
+    <div class="section-header mb-4">
+        <div class="title-section">
+            <i class="fas fa-plus-circle icon"></i><b>VIOLATION DETAILS</b>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row mb-3">
+            <div class="col-12 d-flex align-items-center" style="padding-left: 30px;">
+                <h2 class="me-3 mb-0"><b>New Violation Report</b></h2>
+            </div>
+        </div>
+
+        <form id="add-violation-form" method="post" enctype="multipart/form-data" action="{% url 'add_violation' %}">
+            {% csrf_token %}
+            <div class="row g-3">
+
+                <!-- Violation Info -->
+                <div class="col-md-2">
+                    <div class="violations-details p-3" style="padding-left: 35px;">
+                        <label><b>Reported on:</b></label>
+                        <div>
+                            <span>{{ now|date:"F d, Y" }}</span>, <span>{{ now|date:"g:i A" }}</span>
+                        </div>
+                        <label class="mt-2"><b>Reported by:</b></label>
+                        <p>{{ user.get_full_name }}</p>
+                    </div>
+                </div>
+
+                <!-- Violation Type + Description -->
+                <div class="col-md-3">
+                    <div class="violations-details p-3">
+                        <div class="mb-3">
+                            <label for="{{ form.violation.id_for_label }}"><b>Violation Type:</b></label>
+                            {{ form.violation }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.reason.id_for_label }}"><b>Reason:</b></label>
+                            {{ form.reason }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.photo_proof.id_for_label }}"><b>Photo Proof:</b></label>
+                            {{ form.photo_proof }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}"><b>Description:</b></label>
+                            {{ form.description }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vertical Line Divider -->
+                <div class="col-md-1 d-flex justify-content-center align-items-center">
+                    <div style="border-left: 1px solid #ccc; height: 100%;"></div>
+                </div>
+
+                <!-- Student Photo -->
+                <div class="col-md-2">
+                    <div class="student-photo text-center">
+                        <h4><b>Student Details</b></h4>
+                        <div class="placeholder-img rounded" style="background-color: #f0f0f0; height: 200px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user-circle fa-5x text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Student Details -->
+                <div class="col-md-4">
+                    <div class="student-details mt-2 p-3">
+                        <label for="{{ student_form.name.id_for_label }}"><b>Name:</b></label>
+                        {{ student_form.name }}
+                        <div class="mb-3">
+                            {% if student_form.name.errors %}
+                            <div class="text-danger">
+                                {% for error in student_form.name.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <label for="{{ student_form.student_id.id_for_label }}"><b>Student ID:</b></label>
+                        {{ student_form.student_id }}
+                        <div class="mb-3">
+                            {% if student_form.student_id.errors %}
+                            <div class="text-danger">
+                                {% for error in student_form.student_id.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <a href="{% url 'dashboard' %}" class="btn btn-outline-danger cancel-btn mt-5 me-2">CANCEL</a>
+                            <button type="submit" class="btn btn-primary confirm-btn mt-5">CONFIRM</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div> <!-- End Row -->
+        </form>
+    </div>
+</section>
+{% endblock %}

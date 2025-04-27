@@ -1,0 +1,120 @@
+{% extends "evs_app/base.html" %}
+
+{% block title %}XU OSA - Dashboard{% endblock %}
+
+{% block content %}
+<!-- View Violations Content -->
+<section id="view-violations-content">
+    <div class="section-header d-flex justify-content-between align-items-center">
+        <div class="title-section">
+            <i class="fas fa-table"></i><b> RECENT VIOLATIONS</b>
+        </div>
+
+        <div class="controls">
+            <label>Filters</label>
+            <select id="filter-by-status" class="outline">
+                <option value="" selected>All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="claimed">Claimed</option>
+                <option value="resolved">Resolved</option>
+            </select>
+            <select id="sort-by" class="outline">
+                <option value="" disabled selected>Sort By</option>
+                <option value="date">Date</option>
+                <option value="student-name">Student Name</option>
+            </select>
+            <input type="text" id="search-student" class="outline" placeholder="Search Student">
+        </div>
+    </div>
+
+    <div class="container mt-3">
+        <table id="violations-table" class="table">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Student ID</th>
+                    <th>Ticket #</th>
+                    <th>Violation Type</th>
+                    <th>Date/Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="violations-table-body">
+                {% if violations %}
+                    {% for violation in violations %}
+                    <tr>
+                        <td>{{ violation.student.name }}</td>
+                        <td>{{ violation.student.student_id }}</td>
+                        <td>{{ violation.ticket_number }}</td>
+                        <td>{{ violation.violation.name }}</td>
+                        <td>{{ violation.date_recorded|date:"F d, Y - h:i A" }}</td>
+                        <td>
+                            {% if violation.status == 'pending' %}
+                            <span class="badge bg-danger">Pending</span>
+                            {% elif violation.status == 'claimed' %}
+                            <span class="badge bg-warning text-dark">ID Claimed</span>
+                            {% else %}
+                            <span class="badge bg-success">Resolved</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'ticket_details' violation.ticket_number %}" class="btn btn-primary btn-sm">View</a>
+                                {% if violation.status == 'pending' %}
+                                <button class="btn btn-success btn-sm claim-btn" data-id="{{ violation.record_id }}">Mark Claimed</button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center">No violations recorded yet.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Setup CSRF token for AJAX requests
+        const csrfToken = '{{ csrf_token }}';
+        
+        // Add event listeners to claim buttons
+        document.querySelectorAll('.claim-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const violationId = this.getAttribute('data-id');
+                
+                fetch('{% url "update_violation_status" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({
+                        violation_id: violationId,
+                        status: 'claimed'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while updating the violation status.');
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}
