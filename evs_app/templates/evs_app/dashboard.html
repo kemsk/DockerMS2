@@ -1,4 +1,5 @@
 {% extends "evs_app/base.html" %}
+{% load static %}
 
 {% block title %}XU OSA - Dashboard{% endblock %}
 
@@ -11,18 +12,20 @@
         </div>
 
         <div class="controls">
-            <label>Filters</label>
+            <label for="filter-by-status">Filters</label>
             <select id="filter-by-status" class="outline">
                 <option value="" selected>All Statuses</option>
                 <option value="pending">Pending</option>
                 <option value="claimed">Claimed</option>
                 <option value="resolved">Resolved</option>
             </select>
+
             <select id="sort-by" class="outline">
                 <option value="" disabled selected>Sort By</option>
                 <option value="date">Date</option>
                 <option value="student-name">Student Name</option>
             </select>
+
             <input type="text" id="search-student" class="outline" placeholder="Search Student">
         </div>
     </div>
@@ -81,40 +84,38 @@
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Setup CSRF token for AJAX requests
-        const csrfToken = '{{ csrf_token }}';
-        
-        // Add event listeners to claim buttons
-        document.querySelectorAll('.claim-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const violationId = this.getAttribute('data-id');
-                
-                fetch('{% url "update_violation_status" %}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': csrfToken
-                    },
-                    body: JSON.stringify({
-                        violation_id: violationId,
-                        status: 'claimed'
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.reload();
-                    } else {
-                        alert('Error: ' + data.error);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred while updating the violation status.');
-                });
+document.addEventListener('DOMContentLoaded', function() {
+    const csrfToken = '{{ csrf_token }}';
+
+    document.querySelectorAll('.claim-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const violationId = this.getAttribute('data-id');
+
+            fetch('{% url "update_violation_status" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: JSON.stringify({
+                    violation_id: violationId,
+                    status: 'claimed'
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                alert('An error occurred while updating the violation status.');
             });
         });
     });
+});
 </script>
 {% endblock %}

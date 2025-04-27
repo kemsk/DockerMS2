@@ -13,7 +13,7 @@
 
     <div class="container-fluid">
         <div class="row mb-3">
-            <div class="col-12 d-flex align-items-center" style="padding-left: 30px;">
+            <div class="col-12 d-flex align-items-center ps-4">
                 <h2 class="me-3 mb-0"><b>New Violation Report</b></h2>
             </div>
         </div>
@@ -24,7 +24,7 @@
 
                 <!-- Violation Info -->
                 <div class="col-md-2">
-                    <div class="violations-details p-3" style="padding-left: 35px;">
+                    <div class="violations-details p-3 ps-4">
                         <label><b>Reported on:</b></label>
                         <div>
                             <span>{{ now|date:"F d, Y" }}</span>, <span>{{ now|date:"g:i A" }}</span>
@@ -65,7 +65,7 @@
                 <div class="col-md-2">
                     <div class="student-photo text-center">
                         <h4><b>Student Details</b></h4>
-                        <div class="placeholder-img rounded" style="background-color: #f0f0f0; height: 200px; display: flex; align-items: center; justify-content: center;">
+                        <div class="placeholder-img rounded d-flex align-items-center justify-content-center" style="background-color: #f0f0f0; height: 200px;">
                             <i class="fas fa-user-circle fa-5x text-muted"></i>
                         </div>
                     </div>
@@ -74,9 +74,9 @@
                 <!-- Student Details -->
                 <div class="col-md-4">
                     <div class="student-details mt-2 p-3">
-                        <label for="{{ student_form.name.id_for_label }}"><b>Name:</b></label>
-                        {{ student_form.name }}
                         <div class="mb-3">
+                            <label for="{{ student_form.name.id_for_label }}"><b>Name:</b></label>
+                            {{ student_form.name }}
                             {% if student_form.name.errors %}
                             <div class="text-danger">
                                 {% for error in student_form.name.errors %}
@@ -86,9 +86,9 @@
                             {% endif %}
                         </div>
 
-                        <label for="{{ student_form.student_id.id_for_label }}"><b>Student ID:</b></label>
-                        {{ student_form.student_id }}
                         <div class="mb-3">
+                            <label for="{{ student_form.student_id.id_for_label }}"><b>Student ID:</b></label>
+                            {{ student_form.student_id }}
                             {% if student_form.student_id.errors %}
                             <div class="text-danger">
                                 {% for error in student_form.student_id.errors %}
@@ -98,9 +98,9 @@
                             {% endif %}
                         </div>
 
-                        <div class="d-flex justify-content-end">
-                            <a href="{% url 'dashboard' %}" class="btn btn-outline-danger cancel-btn mt-5 me-2">CANCEL</a>
-                            <button type="submit" class="btn btn-primary confirm-btn mt-5">CONFIRM</button>
+                        <div class="d-flex justify-content-end mt-5">
+                            <a href="{% url 'dashboard' %}" class="btn btn-outline-danger me-2">CANCEL</a>
+                            <button type="submit" class="btn btn-primary">CONFIRM</button>
                         </div>
                     </div>
                 </div>

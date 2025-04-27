@@ -21,11 +21,11 @@
             <div class="col-12 d-flex align-items-center" style="padding-left: 30px">
                 <h2 class="me-3 mb-0"><b>Ticket #{{ violation.ticket_number }}</b></h2>
                 {% if violation.status == 'pending' %}
-                <span class="badge bg-danger">Pending</span>
+                    <span class="badge bg-danger">Pending</span>
                 {% elif violation.status == 'claimed' %}
-                <span class="badge bg-warning text-dark">ID Claimed</span>
+                    <span class="badge bg-warning text-dark">ID Claimed</span>
                 {% else %}
-                <span class="badge bg-success">Resolved</span>
+                    <span class="badge bg-success">Resolved</span>
                 {% endif %}
             </div>
 
@@ -34,12 +34,12 @@
                 <div class="violations-details p-3" style="padding-left: 35px;">
                     <label><b>Photo Proof:</b></label>
                     {% if violation.photo_proof %}
-                    <img src="{{ violation.photo_proof.url }}" alt="Photo Proof" class="img-fluid rounded mb-3">
+                        <img src="{{ violation.photo_proof.url }}" alt="Photo Proof" class="img-fluid rounded mb-3">
                     {% else %}
-                    <div class="placeholder-img rounded" style="background-color: #f0f0f0; height: 200px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-camera fa-3x text-muted"></i>
-                        <span class="ms-2 text-muted">No photo provided</span>
-                    </div>
+                        <div class="placeholder-img rounded" style="background-color: #f0f0f0; height: 200px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-camera fa-3x text-muted"></i>
+                            <span class="ms-2 text-muted">No photo provided</span>
+                        </div>
                     {% endif %}
                 </div>
             </div>
@@ -51,10 +51,10 @@
                     <p><strong>Reported by:</strong> {% if violation.recorded_by %}{{ violation.recorded_by.user.get_full_name }}{% else %}System{% endif %}</p>
                     <p><strong>Violation Type:</strong> {{ violation.violation.name }}</p>
                     {% if violation.reason %}
-                    <p><strong>Reason:</strong> {{ violation.reason.name }}</p>
+                        <p><strong>Reason:</strong> {{ violation.reason.name }}</p>
                     {% endif %}
                     {% if violation.description %}
-                    <p><strong>Description:</strong> {{ violation.description }}</p>
+                        <p><strong>Description:</strong> {{ violation.description }}</p>
                     {% endif %}
                 </div>
             </div>
@@ -73,21 +73,16 @@
                     </div>
                     <p><strong>Name:</strong> {{ violation.student.name }}</p>
                     <p><strong>Student ID:</strong> {{ violation.student.student_id }}</p>
-                    
-                    <form method="post" action="{% url 'update_violation_status' %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="violation_id" value="{{ violation.record_id }}">
-                        
-                        {% if violation.status == 'pending' %}
+
+                    {% if violation.status == 'pending' %}
                         <button type="button" class="btn btn-warning claim-btn mt-2" data-id="{{ violation.record_id }}">MARK ID CLAIMED</button>
-                        {% elif violation.status == 'claimed' %}
+                    {% elif violation.status == 'claimed' %}
                         <button type="button" class="btn btn-success resolve-btn mt-2" data-id="{{ violation.record_id }}">MARK RESOLVED</button>
-                        {% else %}
+                    {% else %}
                         <div class="alert alert-success mt-3">
                             This violation has been resolved on {{ violation.resolved_at|date:"F d, Y" }} by {{ violation.resolved_by.user.get_full_name }}.
                         </div>
-                        {% endif %}
-                    </form>
+                    {% endif %}
                 </div>
             </div>
         </div> <!-- End Row -->
@@ -98,9 +93,23 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // CSRF token for AJAX requests
-        const csrfToken = '{{ csrf_token }}';
-        
+        // Get CSRF token from cookie (Best way for JS fetch)
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrfToken = getCookie('csrftoken');
+
         // Claim button functionality
         const claimBtn = document.querySelector('.claim-btn');
         if (claimBtn) {
@@ -109,7 +118,7 @@
                 updateViolationStatus(violationId, 'claimed');
             });
         }
-        
+
         // Resolve button functionality
         const resolveBtn = document.querySelector('.resolve-btn');
         if (resolveBtn) {
@@ -118,9 +127,9 @@
                 updateViolationStatus(violationId, 'resolved');
             });
         }
-        
+
         function updateViolationStatus(violationId, status) {
-            fetch('{% url "update_violation_status" %}', {
+            fetch("{% url 'update_violation_status' %}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

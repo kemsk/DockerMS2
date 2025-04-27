@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,13 +8,13 @@
     <title>{% block title %}XU OSA - Entry Violation System{% endblock %}</title>
 
     <!-- CSS Links -->
-    <link rel="stylesheet" href="/static/css/admin.css">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Bootstrap Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     {% block extra_head %}{% endblock %}
 </head>
 
@@ -36,9 +37,9 @@
                 <div><strong>{{ user.get_full_name|upper }}</strong></div>
                 <div>
                     {% if user.ssiomember.role == "admin" %}
-                    Admin User
+                        Admin User
                     {% else %}
-                    SSIO User
+                        SSIO User
                     {% endif %}
                 </div>
             </div>
@@ -48,13 +49,13 @@
     <!-- Admin Navigation -->
     <nav class="nav buttons d-flex flex-wrap align-items-center p-3">
         <a href="{% url 'dashboard' %}" class="btn manage {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %} me-2 mb-2">
-            <i class="fas fa-eye icon me-1" aria-hidden="true"></i><b>VIEW VIOLATIONS</b>
+            <i class="fas fa-eye icon me-1"></i><b>VIEW VIOLATIONS</b>
         </a>
         <a href="{% url 'add_violation' %}" class="btn manage {% if request.resolver_match.url_name == 'add_violation' %}active{% endif %} me-2 mb-2">
-            <i class="fas fa-plus-circle icon me-1" aria-hidden="true"></i><b>ADD VIOLATION</b>
+            <i class="fas fa-plus-circle icon me-1"></i><b>ADD VIOLATION</b>
         </a>
         <a href="{% url 'manage_users' %}" class="btn manage {% if request.resolver_match.url_name == 'manage_users' %}active{% endif %} me-2 mb-2">
-            <i class="fas fa-users-cog icon me-1" aria-hidden="true"></i><b>MANAGE USERS</b>
+            <i class="fas fa-users-cog icon me-1"></i><b>MANAGE USERS</b>
         </a>
 
         <div class="date-info ms-auto text-end">
@@ -92,14 +93,12 @@
                     <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body text-center">
                     <p>Are you sure you want to logout, <strong>{{ user.get_full_name }}</strong>?</p>
                 </div>
-
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" style="width:fit-content" data-bs-dismiss="modal">Cancel</button>
-                    <a href="{% url 'logout' %}" class="btn btn-danger" style="width:fit-content">Logout</a>
+                    <button type="button" class="btn btn-secondary" style="width: fit-content;" data-bs-dismiss="modal">Cancel</button>
+                    <a href="{% url 'logout' %}" class="btn btn-danger" style="width: fit-content;">Logout</a>
                 </div>
             </div>
         </div>
@@ -107,7 +106,7 @@
     {% endif %}
 
     <!-- JS File -->
-    <script src="/static/js/admin.js"></script>
+    <script src="{% static 'js/admin.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 

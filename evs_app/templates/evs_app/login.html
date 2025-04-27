@@ -1,4 +1,5 @@
 {% extends "evs_app/base.html" %}
+{% load static %}
 
 {% block title %}XU OSA - Login{% endblock %}
 
@@ -26,39 +27,31 @@
         <div style="border-left: 2px solid #ccc; height: 60%;"></div>
       </div>
 
-      <!-- Right Panel: Login Form -->
+      <!-- Right Panel: Login -->
       <div class="col-md-4 d-flex flex-column justify-content-center">
         <div class="login-form p-4">
           <h4 class="mb-4 text-center"><b>Login</b></h4>
-          <form action="{% url 'login' %}" method="post">
-            {% csrf_token %}
-            <div class="mb-3">
-              <label for="id_username" class="form-label"><strong>Username</strong></label>
-              {{ form.username }}
-              {% if form.username.errors %}
-                <div class="text-danger">
-                  {% for error in form.username.errors %}
-                    {{ error }}
-                  {% endfor %}
-                </div>
-              {% endif %}
-            </div>
-            <div class="mb-3">
-              <label for="id_password" class="form-label"><strong>Password</strong></label>
-              {{ form.password }}
-              {% if form.password.errors %}
-                <div class="text-danger">
-                  {% for error in form.password.errors %}
-                    {{ error }}
-                  {% endfor %}
-                </div>
-              {% endif %}
-            </div>
-            <div class="mb-3 text-end">
-              <a href="#" class="forgot-password">Forgot Password?</a>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">LOG IN</button>
-          </form>
+
+          <!-- We don't need a form anymore -->
+          <div class="mb-3">
+            <label class="form-label"><strong>Username</strong></label>
+            <input type="text" class="form-control" placeholder="Username" disabled>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label"><strong>Password</strong></label>
+            <input type="password" class="form-control" placeholder="Password" disabled>
+          </div>
+
+          <div class="mb-3 text-end">
+            <a href="#" class="forgot-password">Forgot Password?</a>
+          </div>
+
+          <!-- Instead of submit button, a direct link styled as button -->
+          <div class="mb-3 text-center">
+            <a href="{% url 'dashboard' %}" class="btn btn-primary w-100">LOG IN</a>
+          </div>
+
         </div>
       </div>
 

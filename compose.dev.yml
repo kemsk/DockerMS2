@@ -1,7 +1,7 @@
 services:
   db:
     image: mysql:8.0
-    container_name: "evs_db_dev"
+    container_name: "XUSSIO_DB"
     restart: always
     env_file:
       - .env
@@ -16,35 +16,30 @@ services:
       - mysql_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 20s
-      retries: 10
       interval: 5s
+      retries: 5
+      timeout: 10s
 
   web:
     build: .
-    container_name: "evs_web_dev"
-    entrypoint: ["sh", "/app/entrypoint.sh"]
+    container_name: "XU_SSIO_Web"
+    restart: always
+    entrypoint: [ "sh", "/app/entrypoint.sh" ]
     env_file:
       - .env
-    restart: on-failure:3
     volumes:
-      - ./manage.py:/app/manage.py
-      - ./requirements.txt:/app/requirements.txt
-      - ./static:/app/static
+      - .:/app
     ports:
       - "8001:8001"
-
     depends_on:
       db:
         condition: service_healthy
     environment:
-      DATABASE_HOST: ${DB_HOST}
-      DATABASE_NAME: ${DB_NAME}
-      DATABASE_USER: ${DB_USER}
-      DATABASE_PASSWORD: ${DB_PASSWORD}
-      DJANGO_SETTINGS_MODULE: XUOSA_EVS.settings 
+      DB_HOST: db
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DJANGO_SETTINGS_MODULE: XUOSA_EVS.settings
 
 volumes:
   mysql_data:
-
-  
