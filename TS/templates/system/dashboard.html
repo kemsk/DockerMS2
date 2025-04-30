@@ -1,110 +1,138 @@
-{% extends "ts_index.html" %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block content %}
-<div id="view-violations-content" class="content-section" style="display: none;">
-  
-  <div class="section-header">
-    <div class="title-section">
-      <i class="fas fa-table" aria-hidden="true"></i> RECENT VIOLATIONS
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XU OSA - Admin Dashboard</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Header Section -->
+    <div class="header d-flex justify-content-between align-items-center p-3">
+        <a href="dashboard.html" class="header-title" style="text-decoration:none">
+            <div class="title-small"><strong>XU OSA</strong></div>
+            <div class="title-large"><strong>ENTRY VIOLATION SYSTEM</strong></div>
+        </a>
+
+        <button type="button" class="user-info d-flex align-items-center border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#logoutModal" style="cursor: pointer;">
+            <div class="user-icons d-flex align-items-center">
+                <span class="icon-settings me-2" aria-label="Settings Icon"></span>
+                <div class="vertical-line mx-2"></div>
+                <span class="icon-user" aria-label="User Icon"></span>
+            </div>
+            <div class="user-details ms-3 text-start">
+                <div><strong>PEPITO, REM WELL</strong></div>
+                <div>SSIO User</div>
+            </div>
+        </button>
     </div>
 
-    <div class="controls">
-      <div class="filter-container">
-        <select id="filter-by-status" class="status sort-btn">
-          <option value="" disabled selected>ID Status</option>
-          <option value="claimed">Claimed</option>
-          <option value="unclaimed">Unclaimed</option>
-        </select>
-      </div>
+    <!-- Admin Navigation -->
+    <nav class="nav buttons d-flex flex-wrap align-items-center p-3">
+        <a href="dashboard.html" class="btn manage active me-2 mb-2">
+            <i class="fas fa-eye icon me-1" aria-hidden="true"></i><b>VIEW VIOLATIONS</b>
+        </a>
+        <a href="addViolation.html" class="btn manage me-2 mb-2">
+            <i class="fas fa-plus-circle icon me-1" aria-hidden="true"></i><b>ADD VIOLATION</b>
+        </a>
+        <a href="manageUsers.html" class="btn manage me-2 mb-2">
+            <i class="fas fa-users-cog icon me-1" aria-hidden="true"></i><b>MANAGE USERS</b>
+        </a>
+        <div class="date-info ms-auto text-end">
+            <div class="today">TODAY</div>
+            <div id="current-date"></div>
+            <div id="current-time"></div>
+        </div>
+    </nav>
 
-      <div class="sort-container">
-        <select id="sort-by" class="status sort-btn">
-          <option value="" disabled selected>Sort By</option>
-          <option value="date">Date</option>
-          <option value="student-name">Student Name</option>
-        </select>
-      </div>
+    <hr class="horizontal-line mb-4" />
 
-      <div class="search-container">
-        <input type="text" id="search-student" class="status sort-btn" placeholder="Search Student" />
-      </div>
+    <!-- View Violations Content -->
+    <section id="view-violations-content">
+        <div class="section-header d-flex justify-content-between align-items-center">
+            <div class="title-section">
+                <i class="fas fa-table"></i><b> RECENT VIOLATIONS</b>
+            </div>
+
+            <div class="controls">
+                <label>Filters</label>
+                <select id="filter-by-status" class="outline">
+                    <option value="" disabled selected>ID Status</option>
+                    <option value="claimed">Claimed</option>
+                    <option value="unclaimed">Unclaimed</option>
+                </select>
+                <select id="sort-by" class="outline">
+                    <option value="" disabled selected>Sort By</option>
+                    <option value="date">Date</option>
+                    <option value="student-name">Student Name</option>
+                </select>
+                <input type="text" id="search-student" class="outline" placeholder="Search Student">
+            </div>
+        </div>
+
+        <div class="container mt-3">
+            <table id="violations-table" class="table">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Student ID</th>
+                        <th>Ticket #</th>
+                        <th>Violation Type</th>
+                        <th>Date/Time</th>
+                        <th>OSA Status</th>
+                        <th>ID Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="violations-table-body">
+                    <tr>
+                        <td>Juan Dela Cruz</td>
+                        <td>2022100012</td>
+                        <td>2425-001</td>
+                        <td>ID Violation</td>
+                        <td>April 25, 2025 - 10:30 AM</td>
+                        <td><span class="badge bg-danger">Pending</span></td>
+                        <td><span class="badge bg-warning text-dark">Unclaimed</span></td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a href="ticketDetails.html" class="btn btn-primary">View</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Logout Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body text-center">
+                    <p>Are you sure you want to logout, <strong>Rem Well Pepito</strong>?</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" style="width:fit-content" data-bs-dismiss="modal">Cancel</button>
+                    <a href="loginPage.html" class="btn btn-danger" style="width:fit-content">Logout</a>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div class="container">
-    <table class="violations-table">
-      <thead>
-        <tr>
-          <th>Student Name</th>
-          <th>Student ID</th>
-          <th>Ticket #</th>
-          <th>Violation Type</th>
-          <th>Date/Time</th>
-          <th>OSA Status</th>
-          <th>ID Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
+    <script src="admin.js"></script>
 
-      <tbody id="violations-table-body">
-        {% for v in violations %}
-        <tr>
-          <td>{{ v.student_name }}</td>
-          <td>{{ v.student_id }}</td>
-          <td>{{ v.ticket_number }}</td>
-          <td>{{ v.violation_type }}</td>
-          <td>{{ v.date_time }}</td>
-          <td>
-            {% if v.status == "Pending" %}
-              <span style="color: red;">Pending</span>
-            {% elif v.status == "Resolved" %}
-              <span style="color: orange;">Resolved</span>
-            {% elif v.status == "ID Claimed" %}
-              <span style="color: green;">ID Claimed</span>
-            {% else %}
-              {{ v.status }}
-            {% endif %}
-          </td>
-          <td>
-            {% if v.status == "ID Claimed" %}
-              <span>Claimed</span>
-            {% else %}
-              <span>Unclaimed</span>
-            {% endif %}
-          </td>
-          <td>
-            <button>Edit</button>
-            <button>Delete</button>
-          </td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="8">No violations found.</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+</body>
 
-</div>
-
-<!-- Correct place for scripts: AFTER content -->
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const viewViolationsBtn = document.getElementById('view-violations-button');  
-    const viewViolationsContent = document.getElementById('view-violations-content');  
-
-    if (viewViolationsBtn && viewViolationsContent) {
-      viewViolationsBtn.addEventListener('click', function () {
-        // Hide all sections first
-        document.querySelectorAll('.content-section').forEach(section => {
-          section.style.display = 'none';
-        });
-
-        // Then show the violations section
-        viewViolationsContent.style.display = 'block';
-      });
-    }
-  });
-</script>
-{% endblock %}
+</html>
