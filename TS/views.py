@@ -3,12 +3,10 @@ from datetime import datetime
 from .models import * 
 
 def dashboard_view(request):
-    now = datetime.now()
+    return render(request, 'system/dashboard.html')
 
-    violations = Ticket.objects.all()  # Fetch all violations
+def add_violation(request):
+    return render(request, 'system/addViolation.html')
 
-    context = {
-        'violations': violations,
-    }
-
-    return render(request, 'system/dashboard.html', context)
+def user_management_view(request):
+    return render(request, 'system/manageUsers.html')
