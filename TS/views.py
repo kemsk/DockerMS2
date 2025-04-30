@@ -5,7 +5,7 @@ from .models import *
 def dashboard_view(request):
     now = datetime.now()
 
-    violations = Violation.objects.all()  # Fetch all violations
+    violations = Ticket.objects.all()  # Fetch all violations
 
     context = {
         'violations': violations,

@@ -1,5 +1,10 @@
 {% extends "ts_index.html" %}
-
+{% block title %}
+<title>XU SSIO - Dashboard</title>
+{% endblock title %}
+{% block page_name %}
+<h5 class="col-6"><i class='bx bx-home-alt'></i>Dashboard</h5>
+{% endblock page_name %}
 {% block content %}
 <div id="view-violations-content" class="content-section" style="display: none;">
   
@@ -49,7 +54,7 @@
       <tbody id="violations-table-body">
         {% for v in violations %}
         <tr>
-          <td>{{ v.student_name }}</td>
+          <td>NESYL</td>
           <td>{{ v.student_id }}</td>
           <td>{{ v.ticket_number }}</td>
           <td>{{ v.violation_type }}</td>
@@ -87,24 +92,4 @@
   </div>
 
 </div>
-
-<!-- Correct place for scripts: AFTER content -->
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const viewViolationsBtn = document.getElementById('view-violations-button');  
-    const viewViolationsContent = document.getElementById('view-violations-content');  
-
-    if (viewViolationsBtn && viewViolationsContent) {
-      viewViolationsBtn.addEventListener('click', function () {
-        // Hide all sections first
-        document.querySelectorAll('.content-section').forEach(section => {
-          section.style.display = 'none';
-        });
-
-        // Then show the violations section
-        viewViolationsContent.style.display = 'block';
-      });
-    }
-  });
-</script>
 {% endblock %}
