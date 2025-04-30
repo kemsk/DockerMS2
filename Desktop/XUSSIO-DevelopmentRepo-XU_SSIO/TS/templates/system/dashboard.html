@@ -1,0 +1,91 @@
+{% extends "ts_index.html" %}
+
+{% block content %}
+<div id="view-violations-content" class="content-section" style="display: none;">
+  
+  <div class="section-header">
+    <div class="title-section">
+      <i class="fas fa-table" aria-hidden="true"></i> RECENT VIOLATIONS
+    </div>
+
+    <div class="controls">
+      <div class="filter-container">
+        <select id="filter-by-status" class="status sort-btn">
+          <option value="" disabled selected>ID Status</option>
+          <option value="claimed">Claimed</option>
+          <option value="unclaimed">Unclaimed</option>
+        </select>
+      </div>
+
+      <div class="sort-container">
+        <select id="sort-by" class="status sort-btn">
+          <option value="" disabled selected>Sort By</option>
+          <option value="date">Date</option>
+          <option value="student-name">Student Name</option>
+        </select>
+      </div>
+
+      <div class="search-container">
+        <input type="text" id="search-student" class="status sort-btn" placeholder="Search Student" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mt-3">
+    <table class="violations-table table table-striped">
+      <thead>
+        <tr>
+          <th>Student Name</th>
+          <th>Student ID</th>
+          <th>Ticket #</th>
+          <th>Violation Type</th>
+          <th>Date/Time</th>
+          <th>OSA Status</th>
+          <th>ID Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody id="violations-table-body">
+        {% for v in violations %}
+        <tr>
+          <td>{{ v.student_name }}</td>
+          <td>{{ v.student_id }}</td>
+          <td>{{ v.ticket_number }}</td>
+          <td>{{ v.violation_type }}</td>
+          <td>{{ v.date_time }}</td>
+          <td>
+            {% if v.status == "Pending" %}
+              <span style="color: red;">Pending</span>
+            {% elif v.status == "Resolved" %}
+              <span style="color: orange;">Resolved</span>
+            {% elif v.status == "ID Claimed" %}
+              <span style="color: green;">ID Claimed</span>
+            {% else %}
+              {{ v.status }}
+            {% endif %}
+          </td>
+          <td>
+            {% if v.status == "ID Claimed" %}
+              <span>Claimed</span>
+            {% else %}
+              <span>Unclaimed</span>
+            {% endif %}
+          </td>
+          <td>
+            <a href="{% url 'ticket_details' v.id %}" class="btn btn-sm btn-outline-info">View</a>
+            <a href="{% url 'edit_violation' v.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+            <a href="{% url 'delete_violation' v.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="8" class="text-center">No violations found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+{% endblock %}

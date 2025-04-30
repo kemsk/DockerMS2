@@ -1,0 +1,67 @@
+{% extends "ts_index.html" %}
+{% load static %}
+
+{% block content %}
+<div id="ticket-details-content" class="content-section" style="display: block;">
+
+  <div class="section-header d-flex justify-content-between align-items-center mb-4">
+    <div class="title-section">
+      <i class="fas fa-ticket-alt me-2"></i><b>TICKET DETAILS</b>
+    </div>
+    <a class="btn btn-outline-primary" href="{% url 'dashboard' %}" role="button" style="padding: 4px 12px; width: 110px;">
+      <i class="fas fa-arrow-left"></i> Go Back
+    </a>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row g-4">
+
+      <!-- Ticket Header -->
+      <div class="col-12 d-flex align-items-center ps-3">
+        <h2 class="me-3 mb-0"><b>Ticket #{{ violation.ticket_number }}</b></h2>
+        <span class="badge {% if violation.status == 'Unresolved' %}bg-warning text-dark{% else %}bg-success{% endif %}">
+          {{ violation.status }}
+        </span>
+      </div>
+
+      <!-- Photo Proof -->
+      <div class="col-md-3">
+        <div class="violations-details p-3 ps-4">
+          <label><b>Photo Proof:</b></label>
+          <img src="{{ violation.photo.url }}" alt="Photo Proof" class="img-fluid id-photo mb-3">
+        </div>
+      </div>
+
+      <!-- Violation Details -->
+      <div class="col-md-3">
+        <div class="ticket-details p-3">
+          <p><strong>Reported on:</strong> {{ violation.date_reported|date:"F j, Y" }}</p>
+          <p><strong>Reported by:</strong> {{ violation.reported_by.get_full_name }}</p>
+          <p><strong>Violation Type:</strong> {{ violation.violation_type }}</p>
+          <p><strong>Description:</strong> {{ violation.description }}</p>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="col-md-1 d-flex justify-content-center align-items-center">
+        <div style="border-left: 2px solid #ccc; height: 100%;"></div>
+      </div>
+
+      <!-- Student Info -->
+      <div class="col-md-4 text-center">
+        <div class="student-details p-3">
+          <h4><b>Student Details</b></h4>
+          <img src="{{ violation.student.photo.url }}" alt="Student Photo" class="img-fluid id-photo mb-3">
+          <p><strong>Name:</strong> {{ violation.student.name }}</p>
+          <p><strong>Student ID:</strong> {{ violation.student.student_id }}</p>
+          <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary confirm-btn mt-2">ID CLAIMED</button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
