@@ -10,3 +10,6 @@ def add_violation(request):
 
 def user_management_view(request):
     return render(request, 'system/manageUsers.html')
+
+def ticket_details_view(request):
+    return render(request, 'system/ticketDetails.html')

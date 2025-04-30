@@ -1,79 +1,92 @@
 {% extends "ts_index.html" %}
 
 {% block title %}
-<title>XU SSIO - Dashboard</title>
+  <title>XU SSIO - Dashboard</title>
 {% endblock title %}
 
 {% block page_name %}
-<h5 class="col-6"><i class='bx bx-home-alt'></i>Dashboard</h5>
+  <h5 class="col-6"><i class='bx bx-home-alt'></i>Dashboard</h5>
 {% endblock page_name %}
 
 {% block content %}
-<div id="view-violations-content">
-  <div class="section-header">
-    <div class="title-section">
-      <i class="fas fa-table" aria-hidden="true"></i> RECENT VIOLATIONS
-    </div>
+  <div id="view-violations-content">
+    <section id="view-violations-section">
+      <div class="section-header d-flex justify-content-between align-items-center">
+        <div class="title-section">
+          <i class="fas fa-table"></i><b> RECENT VIOLATIONS</b>
+        </div>
 
-    <div class="search-container">
-      <input type="text" id="search-student" class="status sort-btn" placeholder="Search Student" />
-    </div>
+        <div class="controls">
+          <label for="filter-by-status">Filters</label>
+          <select id="filter-by-status" class="outline">
+            <option value="" disabled selected>ID Status</option>
+            <option value="claimed">Claimed</option>
+            <option value="unclaimed">Unclaimed</option>
+          </select>
+          <select id="sort-by" class="outline">
+            <option value="" disabled selected>Sort By</option>
+            <option value="date">Date</option>
+            <option value="student-name">Student Name</option>
+          </select>
+          <input type="text" id="search-student" class="outline" placeholder="Search Student">
+        </div>
+      </div>
+
+      <div class="container mt-3">
+        <table id="violations-table" class="table">
+          <thead>
+            <tr>
+              <th>Student Name</th>
+              <th>Student ID</th>
+              <th>Ticket #</th>
+              <th>Violation Type</th>
+              <th>Date/Time</th>
+              <th>OSA Status</th>
+              <th>ID Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="violations-table-body">
+            {% for v in violations %}
+              <tr>
+                <td>NESYL</td>
+                <td>{{ v.student_id }}</td>
+                <td>{{ v.ticket_number }}</td>
+                <td>{{ v.violation_type }}</td>
+                <td>{{ v.date_time }}</td>
+                <td>
+                  {% if v.status == "Pending" %}
+                    <span style="color: red;">Pending</span>
+                  {% elif v.status == "Resolved" %}
+                    <span style="color: orange;">Resolved</span>
+                  {% elif v.status == "ID Claimed" %}
+                    <span style="color: green;">ID Claimed</span>
+                  {% else %}
+                    {{ v.status }}
+                  {% endif %}
+                </td>
+                <td>
+                  {% if v.status == "ID Claimed" %}
+                    <span>Claimed</span>
+                  {% else %}
+                    <span>Unclaimed</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <button>Edit</button>
+                  <button>Delete</button>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="8">No violations found.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
   </div>
 
-  <div class="container">
-    <table class="violations-table">
-      <thead>
-        <tr>
-          <th>Student Name</th>
-          <th>Student ID</th>
-          <th>Ticket #</th>
-          <th>Violation Type</th>
-          <th>Date/Time</th>
-          <th>OSA Status</th>
-          <th>ID Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="violations-table-body">
-        {% for v in violations %}
-        <tr>
-          <td>NESYL</td>
-          <td>{{ v.student_id }}</td>
-          <td>{{ v.ticket_number }}</td>
-          <td>{{ v.violation_type }}</td>
-          <td>{{ v.date_time }}</td>
-          <td>
-            {% if v.status == "Pending" %}
-              <span style="color: red;">Pending</span>
-            {% elif v.status == "Resolved" %}
-              <span style="color: orange;">Resolved</span>
-            {% elif v.status == "ID Claimed" %}
-              <span style="color: green;">ID Claimed</span>
-            {% else %}
-              {{ v.status }}
-            {% endif %}
-          </td>
-          <td>
-            {% if v.status == "ID Claimed" %}
-              <span>Claimed</span>
-            {% else %}
-              <span>Unclaimed</span>
-            {% endif %}
-          </td>
-          <td>
-            <button>Edit</button>
-            <button>Delete</button>
-          </td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="8">No violations found.</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<script src="admin.js"></script>
+  <script src="admin.js"></script>
 {% endblock %}
