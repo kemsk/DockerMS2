@@ -1,25 +1,22 @@
 {% extends "ts_index.html" %}
+
 {% block title %}
 <title>XU SSIO - Dashboard</title>
 {% endblock title %}
+
 {% block page_name %}
 <h5 class="col-6"><i class='bx bx-home-alt'></i>Dashboard</h5>
 {% endblock page_name %}
+
 {% block content %}
 <div id="view-violations-content">
-  
   <div class="section-header">
     <div class="title-section">
       <i class="fas fa-table" aria-hidden="true"></i> RECENT VIOLATIONS
     </div>
 
-    <script src="admin.js"></script>
-
-</body>
-
-      <div class="search-container">
-        <input type="text" id="search-student" class="status sort-btn" placeholder="Search Student" />
-      </div>
+    <div class="search-container">
+      <input type="text" id="search-student" class="status sort-btn" placeholder="Search Student" />
     </div>
   </div>
 
@@ -37,7 +34,6 @@
           <th>Actions</th>
         </tr>
       </thead>
-
       <tbody id="violations-table-body">
         {% for v in violations %}
         <tr>
@@ -77,6 +73,7 @@
       </tbody>
     </table>
   </div>
-
 </div>
+
+<script src="admin.js"></script>
 {% endblock %}

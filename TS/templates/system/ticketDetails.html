@@ -11,8 +11,10 @@
   <div class="container-fluid">
     <form method="post" enctype="multipart/form-data" id="add-violation-form">
       {% csrf_token %}
+      
+      <!-- Ticket Number -->
       <div class="row mb-3">
-        <div class="col-12 d-flex align-items-center" style="padding-left: 30px;">
+        <div class="col-12 d-flex align-items-center ps-4">
           <h2 class="me-3 mb-0"><b>Ticket #{{ ticket_number|default:"XXXX" }}</b></h2>
         </div>
       </div>
@@ -20,9 +22,10 @@
       <div class="row g-3">
         <!-- Violation Info -->
         <div class="col-md-2">
-          <div class="violations-details p-3" style="padding-left: 35px;">
+          <div class="violations-details p-3 ps-4">
             <label><b>Reported on:</b></label>
             <div>{{ now|date:"F j, Y" }}, <span>{{ now|time:"h:i A" }}</span></div>
+
             <label class="mt-2"><b>Reported by:</b></label>
             <p>{{ request.user.get_full_name }}</p>
           </div>
@@ -49,7 +52,7 @@
           <div style="border-left: 1px solid #ccc; height: 100%;"></div>
         </div>
 
-        <!-- Student Info -->
+        <!-- Student Info Photo -->
         <div class="col-md-2">
           <div class="student-photo text-center">
             <h4><b>Student Details</b></h4>
@@ -57,6 +60,7 @@
           </div>
         </div>
 
+        <!-- Student Info Form -->
         <div class="col-md-4">
           <div class="student-details mt-2 p-3">
             <label for="student-name"><b>Name:</b></label>
