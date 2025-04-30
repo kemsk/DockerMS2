@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
 from rest_framework import status
-
+from rest_framework_simplejwt.backends import TokenBackend
 from .models import StudentData
 
 # ------------------------ LOGGING SETUP ------------------------
@@ -181,13 +181,15 @@ def create_user_and_token(request):
 @api_view(['POST'])
 def decode_jwt_token(request):
     token = request.data.get('token')
+    if not token or not isinstance(token, str):
+        return Response({"error": "Expected a string value"}, status=400)
+
     try:
         decoded = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
         logger.info("200 OK: Token successfully decoded")
         return Response(decoded)
     except jwt.ExpiredSignatureError:
-        logger.warning("400 Bad Request: Token expired")
-        return Response({"error": "Token expired"}, status=400)
-    except jwt.InvalidTokenError:
-        logger.warning("400 Bad Request: Invalid token")
-        return Response({"error": "Invalid token"}, status=400)
+        return Response({"error": "Token expired"}, status=401)
+    except jwt.InvalidTokenError as e:
+        return Response({"error": str(e)}, status=400)
+
