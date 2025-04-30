@@ -148,6 +148,36 @@ body {
   padding: 10px 30px 30px;
 }
 
+.status-pending::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: red;
+  margin-right: 5px;
+}
+
+.status-resolved::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: rgb(60, 196, 60);
+  margin-right: 5px;
+}
+
+.status-cleared::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: rgb(0, 68, 255);
+  margin-right: 5px;
+}
+
 .today {
   font-size: 18px;
   font-weight: bold;
@@ -248,9 +278,6 @@ body {
   overflow: hidden;
 }
 
-th, td {
-  text-align: left;
-}
 
 th {
   font-size: 16px;

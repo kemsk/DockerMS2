@@ -15,6 +15,8 @@ class Student(models.Model):
     last_name = models.CharField(max_length=200)
     middle_name = models.CharField(max_length=200, blank=True)
 
+    def __str__(self):
+        return f"{self.last_name}, {self.first_name}"
 
 class Violation(models.Model):
     violation_id = models.AutoField(primary_key=True)
@@ -26,6 +28,7 @@ class Ticket(models.Model):
     uniform_violation = models.BooleanField(default=0)
     dress_code_violation = models.BooleanField(default=0)
     id_violation = models.BooleanField(default=0)
+    ssio_id = models.IntegerField(blank=False)
     id_status = models.IntegerField(default=0)
     ticket_status = models.IntegerField(default=0)
     remarks = models.CharField(max_length=200, blank=True, null=True)
