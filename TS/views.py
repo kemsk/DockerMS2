@@ -54,7 +54,7 @@ def dashboard_view(request):
 def add_violation(request):
     if request.method == "POST":
         try:
-            data = json.loads(request.body)  # parse raw JSON
+            data = json.loads(request.body)
 
             ay_id = AcademicYear.objects.get(active=1)
 
@@ -72,11 +72,12 @@ def add_violation(request):
                 uniform_violation=uniform_violation,
                 dress_code_violation=dress_code_violation,
                 id_violation=id_violation,
-                ssio_id=1,  #CHANGE UPON AD AND USER INTEGRATION
+                id_not_claimed_violation=0,
+                ssio_id=1,
                 id_status=0,
                 ticket_status=0,
                 remarks=remarks,
-                student_id=student_id,
+                student_id=student_id, 
                 acad_year=ay_id.acad_year_id,
                 photo_path="",
                 date_created=datetime.now(),
@@ -84,13 +85,16 @@ def add_violation(request):
                 semester=ay_id.semester,
             )
 
-            return JsonResponse({'message': 'Violation added successfully', 'success':True})
+            return JsonResponse({'message': 'Violation added successfully', 'success': True})
 
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
 
     last_ticket = Ticket.objects.order_by('-ticket_id').first()
-    new_ticket_id = last_ticket.ticket_id + 1
+    if last_ticket:
+        new_ticket_id = last_ticket.ticket_id + 1
+    else:
+        new_ticket_id = 1
 
     violations = Violation.objects.all()
 

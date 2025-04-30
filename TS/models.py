@@ -24,10 +24,11 @@ class Violation(models.Model):
 
     
 class Ticket(models.Model):
-    ticket_id = models.AutoField(primary_key=True)
+    ticket_id = models.IntegerField(primary_key=True)
     uniform_violation = models.BooleanField(default=0)
     dress_code_violation = models.BooleanField(default=0)
     id_violation = models.BooleanField(default=0)
+    id_not_claimed_violation = models.BooleanField(default=0)
     ssio_id = models.IntegerField(blank=False)
     id_status = models.IntegerField(default=0)
     ticket_status = models.IntegerField(default=0)
