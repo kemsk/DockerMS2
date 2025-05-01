@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 
+
+
 urlpatterns = [
     path('api/students', views.get_students),                        # GET all
     path('api/students/<int:student_id>', views.get_students),       # GET one

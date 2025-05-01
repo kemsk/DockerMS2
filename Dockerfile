@@ -14,8 +14,10 @@ ENV PYTHONUNBUFFERED=1
 # Upgrade pip and install dependencies
 RUN pip install --upgrade pip 
  
-# Copy the requirements file first (better caching)
+# Copy the requilsrements file first (better caching)
 COPY requirements.txt /app/
+COPY entrypoint.sh /app/entrypoint.sh
+
  
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt

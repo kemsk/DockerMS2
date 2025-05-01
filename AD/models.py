@@ -70,3 +70,14 @@ class User(AbstractBaseUser):
         return self.is_admin
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.student_id})"
+
+
+
+#####################################################
+# yourapp/serializers.py
+from rest_framework import serializers
+from .models import StudentData
+class StudentDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentData
+        fields = '__all__'

@@ -80,20 +80,51 @@ def get_students(request, student_id=None):
     logger.warning("405 Method Not Allowed")
     return HttpResponseNotAllowed(['GET'])
 
+# ------------------------ CREATE STUDENT ------------------------
 @csrf_exempt
 @jwt_required
 def create_student(request):
     if request.method == "POST":
         try:
+            # Parse the incoming request data
             data = json.loads(request.body)
-            student = StudentData.objects.create(**data)
+            
+            # List of valid fields for creating a StudentData instance
+            valid_fields = {
+                "first_name",
+                "last_name",
+                "middle_name",
+                "course",
+                "yearlevel",
+                "email",
+                "phone",
+                "contactnumber",
+                "address",
+                "emergencycontactnumber",
+                "emergencycontactname",
+                "cardexpirydate",
+                "birthdate",
+                "schoolyear",
+                "college"
+            }
+
+            # Filter the incoming data to only contain valid fields
+            filtered_data = {key: value for key, value in data.items() if key in valid_fields}
+
+            # Create a new StudentData instance with the filtered data
+            student = StudentData.objects.create(**filtered_data)
             logger.info(f"201 Created: Student created with ID {student.student_id}")
             return JsonResponse(student_to_dict(student), status=201)
+
         except Exception as e:
             logger.error(f"400 Bad Request: {str(e)}")
             return JsonResponse({"error": str(e)}, status=400)
+
     logger.warning("405 Method Not Allowed")
     return HttpResponseNotAllowed(['POST'])
+
+
+
 
 @csrf_exempt
 @jwt_required
