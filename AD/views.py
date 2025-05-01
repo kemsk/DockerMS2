@@ -43,6 +43,7 @@ def jwt_required(view_func):
 def student_to_dict(student):
     return {
         "student_id": student.student_id,
+        "student_photo": student.student_photo,
         "last_name": student.last_name,
         "first_name": student.first_name,
         "middle_name": student.middle_name,
@@ -90,6 +91,7 @@ def create_student(request):
             # List of valid fields for creating a StudentData instance
             valid_fields = {
                 "student_id",
+                "student_photo",
                 "last_name",
                 "first_name",
                 "middle_name",
