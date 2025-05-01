@@ -14,7 +14,7 @@ ENV PYTHONUNBUFFERED=1
 # Upgrade pip and install dependencies
 RUN pip install --upgrade pip 
  
-# Copy the requilsrements file first (better caching)
+# Copy the requilsrements file first (better caching) (placed entrypoint.sh)
 COPY requirements.txt /app/
 COPY entrypoint.sh /app/entrypoint.sh
 

@@ -80,7 +80,7 @@ def get_students(request, student_id=None):
     logger.warning("405 Method Not Allowed")
     return HttpResponseNotAllowed(['GET'])
 
-# ------------------------ CREATE STUDENT ------------------------
+# ------------------------ CREATE STUDENT ------------------------>>
 @csrf_exempt
 @jwt_required
 def create_student(request):
