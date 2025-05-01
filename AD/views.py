@@ -91,21 +91,19 @@ def create_student(request):
             
             # List of valid fields for creating a StudentData instance
             valid_fields = {
-                "first_name",
                 "last_name",
-                "middle_name",
-                "course",
-                "yearlevel",
-                "email",
-                "phone",
-                "contactnumber",
-                "address",
-                "emergencycontactnumber",
-                "emergencycontactname",
-                "cardexpirydate",
-                "birthdate",
+                "first_name",
+                "middle_initial",
                 "schoolyear",
                 "college"
+                "course",
+                "yearlevel",
+                "student_id",
+                "birthdate",
+                "emergencycontactname",
+                "address",
+                "emergencycontactnumber",
+                "cardexpirydate",
             }
 
             # Filter the incoming data to only contain valid fields
