@@ -138,24 +138,15 @@ def ticket_details_view(request, ticket_id):
 def update_id_status(request, ticket_id):
     if request.method == 'POST':
         try:
-            content_type = request.META.get('CONTENT_TYPE', '')
+            data = json.loads(request.body)
 
-            if 'application/json' in content_type:
-                data = json.loads(request.body)
-                new_status = data.get('status')
-            else:
-                new_status = request.POST.get('status')
+            new_status = data.get('status')
 
-            ticket = Ticket.objects.get(ticket_id=ticket_id)
+            ticket = Ticket.objects.get(pk=ticket_id)
             ticket.id_status = new_status
             ticket.save()
 
-            if 'application/json' in content_type:
-                return JsonResponse({'message': 'ID Status updated successfully'})
-            else:
-                return redirect('ts:Dashboard')
-        
+            return JsonResponse({'message': 'ID Status updated successfully'})
+
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
-    
-    return redirect('ts:Dashboard')

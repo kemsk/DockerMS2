@@ -66,11 +66,11 @@
                 </td>
                 <td>
                     {% if ticket.id_status == 0 %}
-                        <form method="POST" action="/xu-entry-violation/ticket/{{ ticket.ticket_id }}/update/id-status">
-                            {% csrf_token %}
-                            <input type="hidden" name="status" value="1">
-                            <button type="submit" class="controls-unclaimed" {% if ticket.ticket_status == 0 %} disabled {% endif %}>Unclaimed</button>
-                        </form>
+                      <form>
+                          {% csrf_token %}
+                          <input type="hidden" name="status" value="1">
+                          <button type="button" class="controls-unclaimed" onclick="update_id({{ticket.ticket_id}}, 1)"{% if ticket.ticket_status == 0 %} disabled {% endif %}>Unclaimed</button>
+                      </form>
                     {% else %}
                         <button type="button" class="controls-claimed" disabled>Claimed</button>
                     {% endif %}
@@ -137,8 +137,78 @@
       });
   });
 
+  function update_id(ticket_id, status) {
+    fetch(`/admin/xu-entry-violation/ticket/${ticket_id}/update/id-status`, {
+        method: "POST",
+        headers: {
+            "Content-Type": 'application/json',
+            "X-CSRFToken": getCSRFToken(),
+        },
+        body: JSON.stringify({
+            status: status
+        })
+    })
+    .then(res => {
+        if (!res.ok) {
+            throw new Error("Server error or invalid response");
+        }
+        return res.json();
+        })
+        .then(data => {
+            get_status(ticket_id)
+        })
+        .catch(error => {
+            console.error("Error fetching ticket data:", error);
+            alert("Failed to load ticket data.");
+        });
+    }
+
+  function get_status(ticket_id){
+    fetch(`/ts/dev/api/${ticket_id}/get-status`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken(),
+        },
+    })
+    .then(res => {
+        if (!res.ok) {
+            throw new Error("Failed to fetch ticket data");
+          }
+          return res.json();
+    })
+    .then(data => {
+        update_id_status(ticket_id, data)
+      })
+      .catch(error => {
+        console.error("Error fetching ticket data:", error);
+        alert("Could not fetch ticket data.");
+      });
+  }
+
+  function update_id_status(ticket_id, data){
+    fetch(`http://localhost:8001/evs/dev/api/${ticket_id}/update-status`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (response.ok)
+        {
+          alert('Ticket updated.');
+          location.reload();
+        }
+      })
+      .catch(error => {
+        console.error("Failed to submit status to SSIO", error);
+        alert("Could not fetch ticket data.");
+      });
+  }
+
   function get_ticket_data(ticketId) {
-    fetch(`/ts/dev/api/get-data/${ticketId}`, {
+    fetch(`/ts/dev/api/${ticketId}/get-ticket`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

@@ -151,3 +151,18 @@ def update_status(request, ticket_id):
         
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
+        
+def get_status(request, ticket_id):
+    try:
+        ticket = Ticket.objects.get(pk=ticket_id)
+        data = {
+            'id_status': ticket.id_status,
+            'ticket_status': ticket.ticket_status,
+            'id_violation': ticket.id_violation,
+            'uniform_violation': ticket.uniform_violation,
+            'dress_code_violation': ticket.dress_code_violation,
+            'id_not_claimed_violation': ticket.id_not_claimed_violation
+        }
+        return JsonResponse(data)
+    except Ticket.DoesNotExist:
+        return JsonResponse({'error': 'No Ticket found'}, status=404)
