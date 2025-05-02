@@ -80,6 +80,7 @@
                     <form action="{% url 'ts:TicketDetails' ticket.ticket_id %}">
                         <button class="controls-unclaimed">View/Edit</button>
                     </form>
+                    <button class="controls-claimed" onclick=check_ticket(ticket.ticket_id)>resend</button>
                   </div>
                 </td>
               </tr>
@@ -135,5 +136,82 @@
           });
       });
   });
+
+  function get_ticket_data(ticketId) {
+    fetch(`/ts/dev/api/get-data/${ticketId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCSRFToken() // optional for GET, but safe to include
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Failed to fetch ticket data");
+      }
+      return response.json();
+    })
+    .then(data => {
+      const ticket = data.ticket;
+      const student = data.student;
+      send_ticket(ticket, student)
+    })
+    .catch(error => {
+      console.error("Error fetching ticket data:", error);
+      alert("Could not fetch ticket data.");
+    });
+  }
+
+  function check_ticket(ticket_id){
+    fetch(`http://localhost:8001/evs/dev/api/${ticket_id}/check_ticket`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            get_ticket_data(ticket_id); 
+        } else {
+            alert("Ticket already sent to OSA.");
+            location.reload();
+        }
+    })
+    .catch(err => {
+        console.error("Error posting to external system:", err);
+    });
+  }
+      
+  function send_ticket(ticket, student){
+    fetch(`http://localhost:8001/evs/dev/api/ticket-submission`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ticket: ticket,
+        student: student
+      })
+    })
+    .then(response => {
+      if (response.ok)
+      {
+        alert('Ticket Submitted Successfully.');
+        location.reload();
+      }
+    })
+    .catch(error => {
+      console.error("Failed to submit ticket to OSA", error);
+      alert("Could not fetch ticket data.");
+    });
+  }
+  
+  function getCSRFToken() {
+    return document.cookie
+      .split(";")
+      .find(c => c.trim().startsWith("csrftoken="))
+      ?.split("=")[1] || "";
+  }
   </script>
 {% endblock %}

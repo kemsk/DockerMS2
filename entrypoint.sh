@@ -6,15 +6,12 @@ python manage.py migrate --noinput
 
 mysql -h "${DB_HOST}" -u "root" -p"$DB_ROOT_PASSWORD" "$DB_NAME" <<EOF
 
-Insert into TS_academicyear values
-(1, '2024-2025', '2025-01-15', '2025-05-31', 1, 1);
-
-INSERT INTO TS_student (first_name, last_name, middle_name)
-VALUES ('Alice', 'Smith', 'Marie'),
-('Bob', 'Johnson', ''),
-('Charlie', 'Brown', 'Lee'),
-('Diana', 'Prince', 'Grace'),
-('Ethan', 'Clark', 'James');
+INSERT INTO TS_student VALUES 
+(1, 'Alice', 'Smith', 'Marie'),
+(2, 'Bob', 'Johnson', ''),
+(3, 'Charlie', 'Brown', 'Lee'),
+(4, 'Diana', 'Prince', 'Grace'),
+(5, 'Ethan', 'Clark', 'James');
 
 INSERT INTO TS_violation VALUES
 (1, 'Uniform Violation'),
@@ -23,6 +20,8 @@ INSERT INTO TS_violation VALUES
 (4, 'ID Not Claimed');
 
 EOF
+
+echo "Database initialized."
 
 # Start the application using Gunicorn
 python -m gunicorn --bind 0.0.0.0:8002 --workers 3 XUSSIO_EVS.wsgi:application

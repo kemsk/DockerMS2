@@ -28,8 +28,10 @@ SECRET_KEY = 'django-insecure-as&5jz2$03*p=rtk#v1efq7o0&vp#k-=1^w6i8ifn-qvmyq$ii
 
 CSRF_TRUSTED_ORIGINS = json.loads(os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '[]'))
 
+CORS_ALLOWED_ORIGINS = json.loads(os.environ.get('CORS_ALLOWED_ORIGINS', '[]'))
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.getenv("DEBUG", default = True))
+DEBUG = bool(os.environ.get("DEBUG", default = False))
 
 ALLOWED_HOSTS = ['*']
 
@@ -44,7 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'TS',
-    'SSIO_API'
+    'SSIO_API',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
@@ -55,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'XUSSIO_EVS.urls'

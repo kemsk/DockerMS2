@@ -18,6 +18,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/xu-entry-violation/', include('TS.urls')),
-    path('api', include('SSIO_API.urls'))
+    path('ts/dev/api/', include('SSIO_API.urls'))
 ]
 
