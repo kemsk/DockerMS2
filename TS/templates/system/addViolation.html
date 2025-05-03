@@ -128,7 +128,7 @@ form.addEventListener("submit", function (e) {
 });
 
 function get_ticket_data(ticketId) {
-  fetch(`/ts/dev/api/get-data/${ticketId}`, {
+  fetch(`/ts/dev/api/${ticketId}/get-ticket`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

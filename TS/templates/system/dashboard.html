@@ -78,9 +78,9 @@
                 <td>
                   <div>
                     <form action="{% url 'ts:TicketDetails' ticket.ticket_id %}">
-                        <button class="controls-unclaimed">View/Edit</button>
+                        <button class="controls-unclaimed">View</button>
                     </form>
-                    <button class="controls-claimed" onclick=check_ticket(ticket.ticket_id)>resend</button>
+                    <button class="controls-claimed" onclick=check_ticket({{ticket.ticket_id}})>resend</button>
                   </div>
                 </td>
               </tr>
