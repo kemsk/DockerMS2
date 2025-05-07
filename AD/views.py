@@ -49,8 +49,9 @@ def jwt_required(view_func):
 def student_to_dict(student):
     return {
         "student_id": student.student_id,
-        "first_name": student.first_name,
+        "student_photo": student.student_photo,
         "last_name": student.last_name,
+        "first_name": student.first_name,
         "middle_name": student.middle_name,
         "student_photo": student.student_photo.url if student.student_photo else None,
         "course": student.course,
@@ -97,8 +98,10 @@ def create_student(request):
             
             # List of valid fields for creating a StudentData instance
             valid_fields = {
-                "first_name",
+                "student_id",
+                "student_photo",
                 "last_name",
+                "first_name",
                 "middle_name",
                 "student_photo", 
                 "course",
@@ -190,21 +193,31 @@ def delete_student(request, student_id):
     logger.warning("405 Method Not Allowed")
     return HttpResponseNotAllowed(['DELETE'])
 
-# ------------------------ JWT USER AND TOKEN ------------------------
+# ------------------------ JWT USER AND TOKEN ------------------------#
 
 @api_view(['POST'])
 def create_user_and_token(request):
-    username = request.data.get('username', 'testuser')
-    password = request.data.get('password', 'testpass123')
+    username = request.data.get('username')
+    password = request.data.get('password')
+    email = request.data.get('email')
 
-    user, created = User.objects.get_or_create(username=username)
-    if created:
-        user.set_password(password)
-        user.save()
-        logger.info(f"201 Created: User '{username}' created")
-    else:
-        logger.info(f"200 OK: Existing user '{username}' retrieved")
+    # Validate required fields
+    if not username or not password or not email:
+        return Response({"error": "Username, password, and email are required."}, status=400)
 
+    # Prevent duplicate email
+    if User.objects.filter(email=email).exists():
+        return Response({"error": "Email already exists."}, status=400)
+
+    # Prevent duplicate username
+    if User.objects.filter(username=username).exists():
+        return Response({"error": "Username already exists."}, status=400)
+
+    # Create user
+    user = User.objects.create_user(username=username, email=email, password=password)
+    logger.info(f"201 Created: User '{username}' created")
+
+    # Generate tokens
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
 
@@ -213,7 +226,7 @@ def create_user_and_token(request):
         "refresh_token": str(refresh),
         "user_id": user.id,
         "username": user.username,
-    }, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
+    }, status=status.HTTP_201_CREATED)
 
 @api_view(['POST'])
 def decode_jwt_token(request):
