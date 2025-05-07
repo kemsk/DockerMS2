@@ -75,7 +75,7 @@ def student_to_dict(student):
         "birthdate": student.birthdate,
         "school_year": student.school_year,
         "college": student.college,
-        "photos": photo_list  # now includes uploaded photos
+        "student_photos": photo_list  # now includes uploaded photos
     }
 
 @csrf_exempt
