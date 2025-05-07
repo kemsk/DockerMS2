@@ -1,5 +1,5 @@
 """
-WSGI config for XU_AD project.
+WSGI config for XUSSIO_EVS project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'XU_AD.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'XUSSIO_EVS.settings')
 
 application = get_wsgi_application()

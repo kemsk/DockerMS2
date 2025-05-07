@@ -1,5 +1,5 @@
 """
-ASGI config for XU_AD project.
+ASGI config for XUSSIO_EVS project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'XU_AD.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'XUSSIO_EVS.settings')
 
 application = get_asgi_application()
