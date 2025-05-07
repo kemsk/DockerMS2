@@ -71,8 +71,8 @@ def student_to_dict(student):
         "phone_number": student.phone_number,
         "emergency_contact_number": student.emergency_contact_number,
         "emergency_contact_name": student.emergency_contact_name,
-        "card_expiry_date": student.card_expiry_date.isoformat() if student.card_expiry_date else None,
-        "birthdate": student.birthdate.isoformat() if student.birthdate else None,
+        "card_expiry_date": student.card_expiry_date,
+        "birthdate": student.birthdate,
         "school_year": student.school_year,
         "college": student.college,
         "photos": photo_list  # now includes uploaded photos
