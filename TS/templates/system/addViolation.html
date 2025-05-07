@@ -55,18 +55,23 @@
         <div class="col-md-3">
           <div class="student-details mt-2 p-3">
             <label for="student-name"><b>First Name:</b></label>
-            <input type="text" id="student-first-name" name="student-first-name" class="form-control" placeholder="Student First Name">
-            <label for="student-name"><b>Middle Name:</b></label>
+            <input type="text" id="student-first-name" name="student-first-name" class="form-control" placeholder="Student First Name" required>
+            
+            <label for="student-middle-name"><b>Middle Name:</b></label>
             <input type="text" id="student-middle-name" name="student-middle-name" class="form-control" placeholder="Student Middle Name">
-            <label for="student-name"><b>Last Name:</b></label>
-            <input type="text" id="student-last-name" name="student-last-name" class="form-control mb-2" placeholder="Student Last Name">
-
+            
+            <label for="student-last-name"><b>Last Name:</b></label>
+            <input type="text" id="student-last-name" name="student-last-name" class="form-control mb-2" placeholder="Student Last Name" required>
+            
             <label for="student-id"><b>Student ID:</b></label>
-            <input type="numeric" id="student-id" name="student_id" class="form-control mb-3" placeholder="Student No.">
-
+            <input type="text" id="student-id" name="student_id" class="form-control mb-3" placeholder="Student No." required pattern="\d{5}">
+            
+            <!-- Student Name Suggestion List -->
+            <ul id="suggestions" style="list-style: none; padding: 0; border: 1px solid #ccc; max-height: 150px; overflow-y: auto; display: none;"></ul>
+        
             <div class="d-flex justify-content-end">
               <a href="{% url 'ts:Dashboard' %}" class="btn btn-outline-danger cancel-btn mt-5 me-2">CANCEL</a>
-              <button type="submit" class="btn btn-primary confirm-btn mt-5">CONFIRM</button>
+              <button type="submit" class="btn btn-primary confirm-btn mt-5" id="confirm-btn" disabled>CONFIRM</button>
             </div>
           </div>
         </div>
@@ -182,5 +187,53 @@ function getCSRFToken() {
     .find(c => c.trim().startsWith("csrftoken="))
     ?.split("=")[1] || "";
 }
+
+function fetchStudentSuggestions(query) {
+    if (query.length < 2) {
+        clearSuggestions();
+        return;
+    }
+
+    fetch(`/api/students/?q=${encodeURIComponent(query)}`, {
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('access_token')  // adjust if token is stored differently
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        showSuggestions(data);
+    })
+    .catch(error => {
+        console.error('Error fetching students:', error);
+    });
+}
+
+function showSuggestions(students) {
+    const suggestions = document.getElementById('suggestions');
+    suggestions.innerHTML = '';
+
+    students.forEach(student => {
+        const li = document.createElement('li');
+        li.style.cursor = 'pointer';
+        li.style.padding = '5px';
+        li.textContent = `${student.first_name} ${student.last_name} (${student.student_id})`;
+        li.addEventListener('click', () => selectStudent(student));
+        suggestions.appendChild(li);
+    });
+}
+
+function selectStudent(student) {
+    document.getElementById('studentName').value = `${student.first_name} ${student.last_name}`;
+    document.getElementById('studentID').value = student.student_id;
+    clearSuggestions();
+}
+
+function clearSuggestions() {
+    document.getElementById('suggestions').innerHTML = '';
+}
+
+document.getElementById('studentName').addEventListener('input', function () {
+    fetchStudentSuggestions(this.value);
+});
 </script>
 {% endblock %}

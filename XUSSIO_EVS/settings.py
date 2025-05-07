@@ -47,8 +47,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'TS',
     'SSIO_API',
-    'corsheaders'
+    'corsheaders',
+    'AD',
+    'rest_framework',
+    'rest_framework_simplejwt',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -89,11 +98,22 @@ WSGI_APPLICATION = 'XUSSIO_EVS.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DB_NAME'),           
-        'USER': os.environ.get('DB_USER'),             
-        'PASSWORD': os.environ.get('DB_PASSWORD'),             
-        'HOST': os.environ.get('DB_HOST'),         
-        'PORT': os.environ.get('DB_PORT'),            
+        'NAME': os.environ.get('AD_DB_NAME'),
+        'USER': os.environ.get('AD_DB_USER'),
+        'PASSWORD': os.environ.get('AD_DB_PASSWORD'),
+        'HOST': os.environ.get('AD_DB_HOST'),
+        'PORT': os.environ.get('AD_DB_PORT'),
+        'OPTIONS': {
+            'sql_mode': 'STRICT_TRANS_TABLES',
+        },
+    },
+    'ssio_api': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('SSIO_DB_NAME'),
+        'USER': os.environ.get('SSIO_DB_USER'),
+        'PASSWORD': os.environ.get('SSIO_DB_PASSWORD'),
+        'HOST': os.environ.get('SSIO_DB_HOST'),
+        'PORT': os.environ.get('SSIO_DB_PORT'),
         'OPTIONS': {
             'sql_mode': 'STRICT_TRANS_TABLES',
         },

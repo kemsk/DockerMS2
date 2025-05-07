@@ -1,42 +1,68 @@
+version: '3.9'
+
 services:
-  db:
+  ssio_db:
     image: mysql:8.0
     container_name: "XUSSIO_DB"
     env_file:
       - .env
     environment:
-      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${DB_NAME}
-      - MYSQL_USER=${DB_USER}
-      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${SSIO_DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${SSIO_DB_NAME}
+      - MYSQL_USER=${SSIO_DB_USER}
+      - MYSQL_PASSWORD=${SSIO_DB_PASSWORD}
     ports:
-      - 3308:3306
+      - 3307:3306
     volumes:
-      - mysql_data:/var/lib/mysql1
+      - ssio_mysql_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
       interval: 5s
-  
+
+  ad_db:
+    image: mysql:8.0
+    container_name: "AD_DB"
+    env_file:
+      - .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${AD_DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${AD_DB_NAME}
+      - MYSQL_USER=${AD_DB_USER}
+      - MYSQL_PASSWORD=${AD_DB_PASSWORD}
+    ports:
+      - 3308:3306
+    volumes:
+      - ad_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+      interval: 5s
+
   web:
     build: .
-    container_name: "XU_SSIO_Web"
+    container_name: "Django_Web"
     restart: on-failure:3
     env_file:
       - .env
     environment:
-      - DATABASE_HOST=${DB_HOST}
-      - DATABASE_USER=${DB_USER}
+      - AD_DATABASE_HOST=ad_db
+      - SSIO_DATABASE_HOST=ssio_db
     depends_on:
-      db:
+      ad_db:
+        condition: service_healthy
+      ssio_db:
         condition: service_healthy
     volumes:
       - ./static:/app/staticfiles
+    ports:
+      - "8003:8003"
 
   nginx:
     image: nginx
-    container_name: "XU_SSIO_Nginx"
+    container_name: "XU_Nginx"
     ports:
       - 8002:80
     volumes: 
@@ -46,4 +72,5 @@ services:
       - web
 
 volumes:
-  mysql_data:
+  ssio_mysql_data:
+  ad_mysql_data:
