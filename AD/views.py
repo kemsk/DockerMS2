@@ -11,6 +11,12 @@ from .models import User
 from rest_framework import status
 from rest_framework_simplejwt.backends import TokenBackend
 from .models import StudentData
+from .models import AdminData
+from .serializers import PhotoUploadSerializer
+from django.utils.datastructures import MultiValueDictKeyError
+from .models import PhotoUpload
+from .serializers import PhotoUploadSerializer
+
 
 # ------------------------ LOGGING SETUP ------------------------
 
@@ -46,17 +52,17 @@ def student_to_dict(student):
         "first_name": student.first_name,
         "last_name": student.last_name,
         "middle_name": student.middle_name,
+        "student_photo": student.student_photo.url if student.student_photo else None,
         "course": student.course,
-        "yearlevel": student.yearlevel,
+        "year_level": student.year_level,
         "email": student.email,
-        "phone": student.phone,
-        "contactnumber": student.contactnumber,
+        "phone_number": student.phone_number,
         "address": student.address,
-        "emergencycontactnumber": student.emergencycontactnumber,
-        "emergencycontactname": student.emergencycontactname,
-        "cardexpirydate": student.cardexpirydate,
+        "emergency_contact_number": student.emergency_contact_number,
+        "emergency_contact_name": student.emergency_contact_name,
+        "card_expiry_date": student.card_expiry_date,
         "birthdate": student.birthdate,
-        "schoolyear": student.schoolyear,
+        "school_year": student.school_year,
         "college": student.college,
     }
 
@@ -94,17 +100,17 @@ def create_student(request):
                 "first_name",
                 "last_name",
                 "middle_name",
+                "student_photo", 
                 "course",
-                "yearlevel",
+                "year_level",
                 "email",
-                "phone",
-                "contactnumber",
                 "address",
-                "emergencycontactnumber",
-                "emergencycontactname",
-                "cardexpirydate",
+                "phone_number",
+                "emergency_contact_number",
+                "emergency_contact_name",
+                "card_expiry_date",
                 "birthdate",
-                "schoolyear",
+                "school_year",
                 "college"
             }
 
@@ -223,4 +229,137 @@ def decode_jwt_token(request):
         return Response({"error": "Token expired"}, status=401)
     except jwt.InvalidTokenError as e:
         return Response({"error": str(e)}, status=400)
+
+#ADMIN CRUD
+
+def admin_to_dict(admin):
+    return {
+        "admin_id": admin.admin_id,
+        "first_name": admin.first_name,
+        "middle_name": admin.middle_name,
+        "last_name": admin.last_name,
+        "email": admin.email,
+        "phone_number": admin.phone_number,
+        "address": admin.address,
+        "emergency_contactname": admin.emergency_contactname,
+        "emergency_contact_number": admin.emergency_contact_number,
+        "card_expiry_date": admin.card_expiry_date,
+    }
+
+@csrf_exempt
+@jwt_required
+def get_admins(request, admin_id=None):
+    if request.method == "GET":
+        if admin_id:
+            try:
+                admin = AdminData.objects.get(pk=admin_id)
+                return JsonResponse(admin_to_dict(admin))
+            except AdminData.DoesNotExist:
+                return JsonResponse({"error": "Admin not found"}, status=404)
+        else:
+            admins = AdminData.objects.all()
+            return JsonResponse([admin_to_dict(a) for a in admins], safe=False)
+    return HttpResponseNotAllowed(['GET'])
+
+@csrf_exempt
+@jwt_required
+def create_admin(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            valid_fields = {
+                "first_name", "middle_name", "last_name", "email", "phone_number",
+                "address", "emergency_contactname", "emergency_contact_number", "card_expiry_date"
+            }
+            filtered_data = {key: value for key, value in data.items() if key in valid_fields}
+            admin = AdminData.objects.create(**filtered_data)
+            return JsonResponse(admin_to_dict(admin), status=201)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+    return HttpResponseNotAllowed(['POST'])
+
+@csrf_exempt
+@jwt_required
+def update_admin(request, admin_id):
+    if request.method == "PUT":
+        try:
+            admin = AdminData.objects.get(pk=admin_id)
+            data = json.loads(request.body)
+            for key, value in data.items():
+                setattr(admin, key, value)
+            admin.save()
+            return JsonResponse(admin_to_dict(admin))
+        except AdminData.DoesNotExist:
+            return JsonResponse({"error": "Admin not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+    return HttpResponseNotAllowed(['PUT'])
+
+
+@csrf_exempt
+@jwt_required
+def patch_admin(request, admin_id):
+    if request.method == "PATCH":
+        try:
+            admin = AdminData.objects.get(pk=admin_id)
+            data = json.loads(request.body)
+            for key, value in data.items():
+                if hasattr(admin, key):
+                    setattr(admin, key, value)
+            admin.save()
+            return JsonResponse(admin_to_dict(admin))
+        except AdminData.DoesNotExist:
+            return JsonResponse({"error": "Admin not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+    return HttpResponseNotAllowed(['PATCH'])
+
+
+@csrf_exempt
+@jwt_required
+def delete_admin(request, admin_id):
+    if request.method == "DELETE":
+        try:
+            admin = AdminData.objects.get(pk=admin_id)
+            admin.delete()
+            return JsonResponse({"message": "Admin deleted successfully"})
+        except AdminData.DoesNotExist:
+            return JsonResponse({"error": "Admin not found"}, status=404)
+    return HttpResponseNotAllowed(['DELETE'])
+
+
+@csrf_exempt
+@jwt_required
+def upload_photo(request):
+    if request.method == "POST":
+        try:
+            student_id = request.POST['student']
+            student = StudentData.objects.get(pk=student_id)
+        except MultiValueDictKeyError:
+            return JsonResponse({'error': 'Student ID is required.'}, status=400)
+        except StudentData.DoesNotExist:
+            return JsonResponse({'error': 'Student not found.'}, status=404)
+
+        serializer = PhotoUploadSerializer(data=request.POST, files=request.FILES)
+        if serializer.is_valid():
+            serializer.save(student=student)  # overrides posted `student` field
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse({'error': 'Invalid image upload', 'details': serializer.errors}, status=400)
+
+    return HttpResponseNotAllowed(['POST'])
+
+
+@csrf_exempt
+@jwt_required
+def get_photos_by_student(request, student_id):
+    if request.method == "GET":
+        try:
+            student = StudentData.objects.get(pk=student_id)
+            photos = PhotoUpload.objects.filter(student=student)
+            serializer = PhotoUploadSerializer(photos, many=True)
+            return JsonResponse(serializer.data, safe=False)
+        except StudentData.DoesNotExist:
+            return JsonResponse({"error": "Student not found"}, status=404)
+    return HttpResponseNotAllowed(['GET'])
+
 

@@ -26,8 +26,8 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_HOST=${DB_HOST}
-      - DATABASE_USER=${DB_USER}
+      - DATABASE_HOST=${db}
+      - DATABASE_USER=${AD_admin}
     depends_on:
       db:
         condition: service_healthy

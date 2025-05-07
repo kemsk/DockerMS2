@@ -69,6 +69,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
+                'django.template.context_processors.media',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -85,11 +86,11 @@ WSGI_APPLICATION = 'XU_AD.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DB_NAME'),           
-        'USER': os.environ.get('DB_USER'),             
-        'PASSWORD': os.environ.get('DB_PASSWORD'),             
-        'HOST': os.environ.get('DB_HOST'),         
-        'PORT': os.environ.get('DB_PORT'),            
+        'NAME': os.environ.get('DB_NAME', 'AD_DB'),           
+        'USER': os.environ.get('DB_USER', 'root'),             
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'root'),             
+        'HOST': os.environ.get('DB_HOST', ''),         
+        'PORT': os.environ.get('DB_PORT', '3306'),            
         'OPTIONS': {
             'sql_mode': 'STRICT_TRANS_TABLES',
         },
@@ -132,6 +133,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -159,3 +161,6 @@ SIMPLE_JWT = {
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
 }
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
