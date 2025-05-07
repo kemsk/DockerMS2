@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import PhotoUpload
+from .models import PhotoUpload, StudentData
 
 class PhotoUploadSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,3 +11,8 @@ class PhotoUploadSerializer(serializers.ModelSerializer):
         if not any(value.name.lower().endswith(ext) for ext in valid_extensions):
             raise serializers.ValidationError("Only .jpeg or .jpg files are allowed.")
         return value
+    
+class StudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentData
+        fields = ['student_id', 'first_name', 'last_name']

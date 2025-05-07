@@ -2,20 +2,22 @@ import json
 import jwt
 import logging
 from django.http import JsonResponse, HttpResponseNotAllowed
-from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
+from AD.permissions import IsAdmin, IsPersonnel
 from .models import User
 from rest_framework import status
-from rest_framework_simplejwt.backends import TokenBackend
 from .models import StudentData
 from .models import AdminData
-from .serializers import PhotoUploadSerializer
+from .serializers import PhotoUploadSerializer , StudentSerializer
 from django.utils.datastructures import MultiValueDictKeyError
 from .models import PhotoUpload
-from .serializers import PhotoUploadSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
+from django.db.models import Q
 
 
 # ------------------------ LOGGING SETUP ------------------------
@@ -78,8 +80,8 @@ def student_to_dict(student):
         "student_photos": photo_list  # now includes uploaded photos
     }
 
-@csrf_exempt
-@jwt_required
+@api_view(['GET'])
+@permission_classes([IsPersonnel])
 def get_students(request, student_id=None):
     if request.method == "GET":
         if student_id:
@@ -103,9 +105,22 @@ def get_students(request, student_id=None):
     logger.warning("405 Method Not Allowed")
     return HttpResponseNotAllowed(['GET'])
 
+@api_view(['GET'])
+@permission_classes([IsPersonnel])
+def student_suggestions(request):
+    query = request.GET.get('q', '').strip()
+    if len(query) < 2:
+        return Response([], status=status.HTTP_200_OK)
+
+    students = StudentData.objects.filter(
+        Q(first_name__icontains=query) | Q(last_name__icontains=query)
+    )[:10]  # Limit to 10 results
+
+    serializer = StudentSerializer(students, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 # ------------------------ CREATE STUDENT ------------------------>>
-@csrf_exempt
-@jwt_required
+@api_view(['POST'])
+@permission_classes([IsAdmin]) 
 def create_student(request):
     if request.method == "POST":
         try:
@@ -145,8 +160,8 @@ def create_student(request):
 
 
 
-@csrf_exempt
-@jwt_required
+@api_view(['PUT' ,'PATCH', 'DELETE'])
+@permission_classes([IsAdmin]) 
 def update_student(request, student_id):
     if request.method == "PUT":
         try:
@@ -166,8 +181,7 @@ def update_student(request, student_id):
     logger.warning("405 Method Not Allowed")
     return HttpResponseNotAllowed(['PUT'])
 
-@csrf_exempt
-@jwt_required
+@permission_classes([IsAdmin]) 
 def patch_student(request, student_id):
     if request.method == "PATCH":
         try:
@@ -188,8 +202,7 @@ def patch_student(request, student_id):
     logger.warning("405 Method Not Allowed")
     return HttpResponseNotAllowed(['PATCH'])
 
-@csrf_exempt
-@jwt_required
+@permission_classes([IsAdmin])
 def delete_student(request, student_id):
     if request.method == "DELETE":
         try:
@@ -205,15 +218,29 @@ def delete_student(request, student_id):
 
 # ------------------------ JWT USER AND TOKEN ------------------------#
 
+
+
 @api_view(['POST'])
-def create_user_and_token(request):
+@permission_classes([IsAdmin]) 
+def create_user(request):
+    # Only allow admins to create new users
+    
+    if not request.user or not request.user.is_staff:
+        return Response({"error": "Permission denied. Only admins can create users."}, status=403)
+
+    # Extract data from the request
     username = request.data.get('username')
     password = request.data.get('password')
     email = request.data.get('email')
+    role = request.data.get('role')  # The role field: "admin" or "personnel"
 
     # Validate required fields
-    if not username or not password or not email:
-        return Response({"error": "Username, password, and email are required."}, status=400)
+    if not username or not password or not email or not role:
+        return Response({"error": "Username, password, email, and role are required."}, status=400)
+
+    # Validate role
+    if role not in ["admin", "personnel"]:
+        return Response({"error": "Invalid role. Allowed values are 'admin' or 'personnel'."}, status=400)
 
     # Prevent duplicate email
     if User.objects.filter(email=email).exists():
@@ -224,19 +251,41 @@ def create_user_and_token(request):
         return Response({"error": "Username already exists."}, status=400)
 
     # Create user
-    user = User.objects.create_user(username=username, email=email, password=password)
-    logger.info(f"201 Created: User '{username}' created")
-
-    # Generate tokens
-    refresh = RefreshToken.for_user(user)
-    access_token = str(refresh.access_token)
+    is_staff = role == "admin"  # Admins have is_staff=True
+    user = User.objects.create_user(username=username, email=email, password=password, is_staff=is_staff)
+    
+    logger.info(f"201 Created: User '{username}' with role '{role}' created")
 
     return Response({
-        "access_token": access_token,
-        "refresh_token": str(refresh),
         "user_id": user.id,
         "username": user.username,
+        "role": role,
     }, status=status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
+def login(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+
+    # Validate the data
+    if not username or not password:
+        return JsonResponse({"error": "Username and password are required"}, status=400)
+
+    # Authenticate the user
+    user = authenticate(request, username=username, password=password)
+    if user:
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+        return JsonResponse({
+            "access_token": access_token,
+            "refresh_token": str(refresh),
+            "user_id": user.id,
+            "username": user.username,
+            "role": "admin" if user.is_staff else "personnel",
+        }, status=status.HTTP_200_OK)
+    else:
+        return JsonResponse({"error": "Invalid credentials"}, status=401)
 
 @api_view(['POST'])
 def decode_jwt_token(request):
@@ -269,8 +318,8 @@ def admin_to_dict(admin):
         "card_expiry_date": admin.card_expiry_date,
     }
 
-@csrf_exempt
-@jwt_required
+@api_view(['GET'])
+@permission_classes([IsAdmin])
 def get_admins(request, admin_id=None):
     if request.method == "GET":
         if admin_id:
@@ -284,25 +333,9 @@ def get_admins(request, admin_id=None):
             return JsonResponse([admin_to_dict(a) for a in admins], safe=False)
     return HttpResponseNotAllowed(['GET'])
 
-@csrf_exempt
-@jwt_required
-def create_admin(request):
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            valid_fields = {
-                "first_name", "middle_name", "last_name", "email", "phone_number",
-                "address", "emergency_contactname", "emergency_contact_number", "card_expiry_date"
-            }
-            filtered_data = {key: value for key, value in data.items() if key in valid_fields}
-            admin = AdminData.objects.create(**filtered_data)
-            return JsonResponse(admin_to_dict(admin), status=201)
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=400)
-    return HttpResponseNotAllowed(['POST'])
 
-@csrf_exempt
-@jwt_required
+@api_view(['PUT'])
+@permission_classes([IsAdmin])
 def update_admin(request, admin_id):
     if request.method == "PUT":
         try:
@@ -319,8 +352,8 @@ def update_admin(request, admin_id):
     return HttpResponseNotAllowed(['PUT'])
 
 
-@csrf_exempt
-@jwt_required
+@api_view(['PATCH'])
+@permission_classes([IsAdmin])
 def patch_admin(request, admin_id):
     if request.method == "PATCH":
         try:
@@ -338,8 +371,8 @@ def patch_admin(request, admin_id):
     return HttpResponseNotAllowed(['PATCH'])
 
 
-@csrf_exempt
-@jwt_required
+@api_view(['DELETE'])
+@permission_classes([IsAdmin])
 def delete_admin(request, admin_id):
     if request.method == "DELETE":
         try:
@@ -351,8 +384,8 @@ def delete_admin(request, admin_id):
     return HttpResponseNotAllowed(['DELETE'])
 
 
-@csrf_exempt
-@jwt_required
+@api_view(['POST'])
+@permission_classes([IsPersonnel])
 def upload_photo(request):
     if request.method == "POST":
         try:
@@ -376,8 +409,8 @@ def upload_photo(request):
     return HttpResponseNotAllowed(['POST'])
 
 
-@csrf_exempt
-@jwt_required
+@api_view(['GET'])
+@permission_classes([IsPersonnel])
 def get_photos_by_student(request, student_id):
     if request.method == "GET":
         try:

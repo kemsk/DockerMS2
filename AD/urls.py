@@ -8,10 +8,10 @@ from .views import (
     update_student,
     patch_student,
     delete_student,
-    create_user_and_token,
+    create_user,
     decode_jwt_token,
     get_admins,
-    create_admin,
+    login,
     update_admin,
     patch_admin,
     delete_admin,
@@ -20,24 +20,25 @@ from .views import (
 
 urlpatterns = [
     # Student API
-    path('api/students', get_students),                             # GET all
-    path('api/students/<int:student_id>', get_students),            # GET one
-    path('api/students/create', create_student),                    # POST
-    path('api/students/update/<int:student_id>', update_student),   # PUT
-    path('api/students/patch/<int:student_id>', patch_student),     # PATCH
-    path('api/students/delete/<int:student_id>', delete_student),   # DELETE
+    path('api/students', get_students),                             
+    path('api/students/<int:student_id>', get_students),           
+ 
 
     # Auth
-    path('api/auth/create-user-token', create_user_and_token),
+    path('api/auth/create-user-token', create_user),
     path('api/auth/decode-token', decode_jwt_token),
+    path('api/auth/login', login),
 
     # Admin API
     path('api/admins', get_admins),
     path('api/admins/<int:admin_id>', get_admins),
-    path('api/admins/create', create_admin),
     path('api/admins/<int:admin_id>/update', update_admin),
     path('api/admins/<int:admin_id>/patch', patch_admin),
     path('api/admins/<int:admin_id>/delete', delete_admin),
+    path('api/admins/students/create', create_student),                    
+    path('api/admins/students/update/<int:student_id>', update_student),   
+    path('api/admins/students/patch/<int:student_id>', patch_student),     
+    path('api/admins/students/delete/<int:student_id>', delete_student), 
 
     #Photo upload
     path('api/upload-photo', upload_photo, name='upload-photo'),

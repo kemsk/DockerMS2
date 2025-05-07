@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 import json
+from datetime import timedelta
 
 load_dotenv('.env')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -54,9 +55,12 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
 }
 
 MIDDLEWARE = [
@@ -168,3 +172,28 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': { 'class': 'logging.StreamHandler' },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=365),  # Effectively "never" expires until blacklisted
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # Refresh token expiration.
+    'ROTATE_REFRESH_TOKENS': False,  # Don't rotate refresh tokens.
+    'BLACKLIST_AFTER_ROTATION': True,  # Automatically blacklist the refresh token after it rotates.
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,  
+}
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

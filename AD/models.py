@@ -1,12 +1,12 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
+# ----------------- STUDENT DATA -----------------
 class StudentData(models.Model):
     student_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
     middle_name = models.CharField(max_length=200, blank=True, null=True)
-    student_photo = models.ImageField(upload_to='student_photos/', blank=True, null=True)
     course = models.CharField(max_length=200)
     year_level = models.CharField(max_length=10)
     email = models.EmailField(max_length=200, unique=True)
@@ -22,7 +22,7 @@ class StudentData(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.student_id})"
 
-
+# ----------------- ADMIN DATA -----------------
 class AdminData(models.Model):
     admin_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=200)
@@ -32,10 +32,10 @@ class AdminData(models.Model):
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     address = models.CharField(max_length=200, blank=True, null=True)
     emergency_contact_number = models.CharField(max_length=200, blank=True, null=True)
-    emergency_contactname = models.CharField(max_length=200, blank=True, null=True)
+    emergency_contact_name = models.CharField(max_length=200, blank=True, null=True)  # fixed typo
     card_expiry_date = models.DateField(blank=True, null=True)
 
-
+# ----------------- PHOTO UPLOAD -----------------
 class PhotoUpload(models.Model):
     student = models.ForeignKey('StudentData', on_delete=models.CASCADE, related_name='photos')
     title = models.CharField(max_length=100)
@@ -45,19 +45,21 @@ class PhotoUpload(models.Model):
     def __str__(self):
         return f"{self.title} for {self.student}"
 
-
+# ----------------- USER MODEL -----------------
 class CustomUserManager(BaseUserManager):
-    def create_user(self, username, email, password=None):
+    def create_user(self, username, email, password=None, role='personnel'):
         if not username:
             raise ValueError('Users must have a username')
         if not email:
             raise ValueError('Users must have an email address')
+        if role not in ['admin', 'personnel']:
+            raise ValueError('Role must be either "admin" or "personnel"')
 
         user = self.model(
             username=username,
             email=self.normalize_email(email),
+            role=role,
         )
-
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -67,32 +69,24 @@ class CustomUserManager(BaseUserManager):
             username=username,
             email=email,
             password=password,
+            role='admin',
         )
-        user.is_admin = True
+        user.is_superuser = True
+        user.is_staff = True
         user.save(using=self._db)
         return user
 
-
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=200, unique=True)
     email = models.EmailField(max_length=200, unique=True)
+    role = models.CharField(max_length=10, choices=[('admin', 'Admin'), ('personnel', 'Personnel')])
     is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)  # Needed for Django admin
 
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email']
+    REQUIRED_FIELDS = ['email', 'role']
 
     def __str__(self):
-        return f"{self.username} ({self.email})"
-
-    def has_perm(self, perm, obj=None):
-        return True
-
-    def has_module_perms(self, app_label):
-        return True
-
-    @property
-    def is_staff(self):
-        return self.is_admin
+        return f"{self.username} ({self.role})"
