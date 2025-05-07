@@ -59,7 +59,7 @@ def student_to_dict(student):
     ]
     
     return {
-        "id": student.id,
+        "id": student.student_id, 
         "student_id": student.student_id,
         "last_name": student.last_name,
         "first_name": student.first_name,
