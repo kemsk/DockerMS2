@@ -47,24 +47,35 @@ def jwt_required(view_func):
 # ------------------------ STUDENT CRUD ------------------------
 
 def student_to_dict(student):
+    photos = student.photos.all()  # using related_name='photos' from your model
+    photo_list = [
+        {
+            "id": photo.id,
+            "title": photo.title,
+            "image_url": f"{settings.MEDIA_URL}{photo.image.name}",
+            "uploaded_at": photo.uploaded_at.isoformat()
+        }
+        for photo in photos
+    ]
+    
     return {
+        "id": student.id,
         "student_id": student.student_id,
-        "student_photo": student.student_photo,
         "last_name": student.last_name,
         "first_name": student.first_name,
         "middle_name": student.middle_name,
-        "student_photo": student.student_photo.url if student.student_photo else None,
         "course": student.course,
         "year_level": student.year_level,
         "email": student.email,
-        "phone_number": student.phone_number,
         "address": student.address,
+        "phone_number": student.phone_number,
         "emergency_contact_number": student.emergency_contact_number,
         "emergency_contact_name": student.emergency_contact_name,
-        "card_expiry_date": student.card_expiry_date,
-        "birthdate": student.birthdate,
+        "card_expiry_date": student.card_expiry_date.isoformat() if student.card_expiry_date else None,
+        "birthdate": student.birthdate.isoformat() if student.birthdate else None,
         "school_year": student.school_year,
         "college": student.college,
+        "photos": photo_list  # now includes uploaded photos
     }
 
 @csrf_exempt
@@ -93,17 +104,13 @@ def get_students(request, student_id=None):
 def create_student(request):
     if request.method == "POST":
         try:
-            # Parse the incoming request data
             data = json.loads(request.body)
-            
-            # List of valid fields for creating a StudentData instance
+
             valid_fields = {
                 "student_id",
-                "student_photo",
                 "last_name",
                 "first_name",
                 "middle_name",
-                "student_photo", 
                 "course",
                 "year_level",
                 "email",
@@ -117,10 +124,8 @@ def create_student(request):
                 "college"
             }
 
-            # Filter the incoming data to only contain valid fields
             filtered_data = {key: value for key, value in data.items() if key in valid_fields}
 
-            # Create a new StudentData instance with the filtered data
             student = StudentData.objects.create(**filtered_data)
             logger.info(f"201 Created: Student created with ID {student.student_id}")
             return JsonResponse(student_to_dict(student), status=201)
@@ -353,7 +358,11 @@ def upload_photo(request):
         except StudentData.DoesNotExist:
             return JsonResponse({'error': 'Student not found.'}, status=404)
 
-        serializer = PhotoUploadSerializer(data=request.POST, files=request.FILES)
+        # Corrected serializer call
+        data = request.POST.copy()
+        data['image'] = request.FILES.get('image')
+        serializer = PhotoUploadSerializer(data=data)
+
         if serializer.is_valid():
             serializer.save(student=student)  # overrides posted `student` field
             return JsonResponse(serializer.data, status=201)

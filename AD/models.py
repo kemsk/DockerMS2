@@ -96,23 +96,3 @@ class User(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
-
-
-from rest_framework import serializers
-from .models import StudentData, PhotoUpload
-
-class StudentDataSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = StudentData
-        fields = '__all__'
-
-
-class PhotoUploadSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PhotoUpload
-        fields = ['id', 'title', 'image', 'uploaded_at', 'student']
-
-    def validate_image(self, value):
-        if not value.content_type in ['image/jpeg', 'image/jpg']:
-            raise serializers.ValidationError("Only JPEG or JPG image files are allowed.")
-        return value
