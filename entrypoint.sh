@@ -6,6 +6,9 @@ python manage.py migrate --noinput
 
 mysql -h "${DB_HOST}" -u "root" -p"$DB_ROOT_PASSWORD" "$DB_NAME" <<EOF
 
+SET GLOBAL time_zone = 'Asia/Manila';
+SET time_zone = 'Asia/Manila';
+
 INSERT INTO TS_student VALUES 
 (1, 'Alice', 'Smith', 'Marie'),
 (2, 'Bob', 'Johnson', ''),
