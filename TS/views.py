@@ -3,10 +3,8 @@ from datetime import datetime, timedelta
 from django.core.paginator import Paginator
 from .models import * 
 import json
-from django.db.models import Sum, Q, Count
-from django.http import JsonResponse, HttpResponseNotAllowed
-import pytz
-tz = pytz.timezone('Asia/Manila')
+from django.db.models import Q
+from django.http import JsonResponse
 
 def paginate_queryset(request, queryset, per_page):
     page_number = request.GET.get('page')
@@ -100,7 +98,7 @@ def add_ticket(request):
                 student= Student.objects.get(pk=student_id), 
                 acad_year = AcademicYear.objects.get(pk=ay.acad_year_id),
                 photo_path="",
-                date_created=datetime.now(tz),
+                date_created=datetime.now(),
                 date_validated=None,
                 semester=ay.semester
             )
